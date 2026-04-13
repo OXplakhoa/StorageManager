@@ -1,8 +1,8 @@
 # 📋 TIẾN ĐỘ DỰ ÁN – PTTKHT Quản lý Kho hàng (Nhóm 11)
 
-> **Cập nhật lần cuối:** 13/04/2026 – 23:12  
+> **Cập nhật lần cuối:** 13/04/2026 – 23:22  
 > **Deadline:** Thứ 7, 18/04/2026  
-> **Trạng thái tổng thể:** 🟡 Đang thực hiện (Hoàn thành ~25%)
+> **Trạng thái tổng thể:** 🟡 Đang thực hiện (Hoàn thành ~40%)
 
 ---
 
@@ -10,12 +10,12 @@
 
 ```
 Chương 1 – Tổng quan               ██░░░░░░░░  20%  (Đã có sẵn từ docx, cần bổ sung)
-Chương 2 – Phân tích hệ thống      ████████░░  40%  (Xong NV, đang làm HT)
+Chương 2 – Phân tích hệ thống      ██████████  80%  (Xong NV + HT, còn Class Diagram)
 Chương 3 – Thiết kế hệ thống       ░░░░░░░░░░   0%
 Chương 4 – Kết luận                 ░░░░░░░░░░   0%
 Web App                             ░░░░░░░░░░   0%
 ────────────────────────────────────────────────────
-TỔNG                                ████░░░░░░  ~25%
+TỔNG                                ██████░░░░  ~40%
 ```
 
 ---
@@ -68,8 +68,8 @@ TỔNG                                ████░░░░░░  ~25%
 #### 2.3 Mô hình hóa Chức năng (Trọng số: 30%)
 | # | Hạng mục | Trạng thái | File output |
 |---|---|---|---|
-| 2.3.1 | Sơ đồ Use Case hệ thống (17 UC) | ⬜ Chưa làm | — |
-| 2.3.2 | Đặc tả UC hệ thống (17 UC chi tiết) | ⬜ Chưa làm | — |
+| 2.3.1 | Sơ đồ Use Case hệ thống (17 UC) | ✅ Xong | [`diagrams/uc_he_thong.md`](file:///Users/khoado/code/PTTKHT/diagrams/uc_he_thong.md) |
+| 2.3.2 | Đặc tả UC hệ thống (17 UC chi tiết) | ✅ Xong | [`docs/dac_ta_uc_ht_p1.md`](file:///Users/khoado/code/PTTKHT/docs/dac_ta_uc_ht_p1.md) + [`p2`](file:///Users/khoado/code/PTTKHT/docs/dac_ta_uc_ht_p2.md) |
 
 #### 2.4 Mô hình hóa Cấu trúc (Trọng số: 30%)
 | # | Hạng mục | Trạng thái | File output |
@@ -153,3 +153,5 @@ TỔNG                                ████░░░░░░  ~25%
 | 13/04 – 23:05 | ✅ Hoàn thành 7 Sequence Diagrams nghiệp vụ (NV01→NV07) |
 | 13/04 – 23:09 | ✅ Tạo IBM Rose Notation Guide + Bổ sung Swimlane Mapping cho tất cả Activity Diagrams |
 | 13/04 – 23:12 | ✅ Tạo file TIEN_DO.md (file này) |
+| 13/04 – 23:22 | ✅ Sơ đồ Use Case Hệ thống (17 UC) + Ma trận truy vết NV→HT + Hướng dẫn Rose |
+| 13/04 – 23:22 | ✅ Đặc tả chi tiết 17 UC hệ thống (2 file: P1 UC01→09, P2 UC10→17 bao gồm 2 AI) |
