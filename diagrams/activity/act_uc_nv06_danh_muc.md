@@ -46,6 +46,49 @@ flowchart TD
     style HH2 fill:#d4edda,color:#155724
 ```
 
+## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
+
+### Swimlanes
+| Swimlane | Tên Actor |
+|---|---|
+| Lane 1 | **Kế toán kho / Thủ kho** |
+
+> **Lưu ý:** UC này chủ yếu do 1 tác nhân thực hiện (Kế toán kho hoặc Thủ kho, tùy phân công). Có thể dùng 1 swimlane duy nhất hoặc tách 2 nếu muốn chi tiết hơn.
+
+### Phân bổ Action States
+
+| Mã Node | Action State | Ký hiệu |
+|---|---|---|
+| Start | ⬤ Bắt đầu | Initial Node (●) |
+| F1 | Nhận yêu cầu cập nhật danh mục | Action State ▭ |
+| D1 | [Loại danh mục cần cập nhật?] | Decision ◇ |
+| NCC1 | Thu thập thông tin NCC | Action State ▭ |
+| HH1 | Thu thập thông tin Hàng hóa | Action State ▭ |
+| D2 | [NCC đã tồn tại?] | Decision ◇ |
+| D3 | [Hàng hóa đã tồn tại?] | Decision ◇ |
+| D4 | [Hàng hóa còn kinh doanh?] | Decision ◇ |
+| NCC2 | Thêm mới NCC | Action State ▭ |
+| NCC3 | Cập nhật thông tin NCC | Action State ▭ |
+| HH2 | Thêm mới Hàng hóa | Action State ▭ |
+| HH3 | Cập nhật thông tin Hàng hóa | Action State ▭ |
+| HH4 | Đánh dấu "Ngừng hoạt động" | Action State ▭ |
+| V1 | Kiểm tra chính xác & không trùng | Action State ▭ |
+| F2 | Lưu trữ danh mục đã cập nhật | Action State ▭ |
+| F3 | Thông báo các bộ phận liên quan | Action State ▭ |
+| End | ◉ Kết thúc | Final Node (◉) |
+
+### Guard Conditions
+- D1 → NCC1: `[Nhà cung cấp]`
+- D1 → HH1: `[Hàng hóa]`
+- D2 → NCC2: `[Chưa có]`
+- D2 → NCC3: `[Đã có]`
+- D3 → HH2: `[Chưa có]`
+- D3 → D4: `[Đã có]`
+- D4 → HH3: `[Còn KD]`
+- D4 → HH4: `[Ngừng KD]`
+
+---
+
 ## Giải thích luồng
 ### Luồng chính
 Tác nhân nhận yêu cầu → Xác định loại danh mục (NCC hoặc Hàng hóa) → Thu thập thông tin → Kiểm tra tồn tại → Thêm mới hoặc Cập nhật → Kiểm tra chính xác → Lưu trữ → Thông báo.

@@ -49,6 +49,57 @@ flowchart TD
     style G17 fill:#d4edda,color:#155724
 ```
 
+## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
+
+### Swimlanes
+| Swimlane | Tên Actor |
+|---|---|
+| Lane 1 | **Trưởng kho** |
+| Lane 2 | **Thủ kho** |
+| Lane 3 | **Kế toán kho** |
+
+### Phân bổ Action States
+
+| Mã Node | Action State | Swimlane | Ký hiệu |
+|---|---|---|---|
+| Start | ⬤ Bắt đầu (kỳ kiểm kê / đột xuất) | Lane 1 | Initial Node (●) |
+| G1 | Lập kế hoạch kiểm kê | Lane 1 | Action State ▭ |
+| G2 | Thông báo kế hoạch đến TK + KTK | Lane 1 → Lane 2, 3 | ▭ (transition chéo) |
+| G3 | Chuẩn bị biên bản kiểm kê trắng | Lane 2 | Action State ▭ |
+| G4 | Kiểm đếm thực tế từng mặt hàng | Lane 2 + Lane 3 | Action State ▭ (Fork bar) |
+| G5 | Kiểm tra tình trạng chất lượng | Lane 2 + Lane 3 | Action State ▭ |
+| G6 | Ghi nhận kết quả vào BB kiểm kê | Lane 2 | Action State ▭ |
+| G7 | Xuất SL tồn kho sổ sách (cut-off) | Lane 3 | Action State ▭ |
+| G8 | Đối chiếu SL thực tế vs sổ sách | Lane 3 | Action State ▭ |
+| D1 | [Có chênh lệch?] | Lane 3 | Decision ◇ |
+| G9 | Ghi nhận "Khớp" vào BB | Lane 3 | Action State ▭ |
+| G10 | Ghi nhận chênh lệch (Thừa/Thiếu) | Lane 3 | Action State ▭ |
+| G11 | Xác định nguyên nhân | Lane 3 | Action State ▭ |
+| G12 | Đề xuất phương án xử lý | Lane 3 | Action State ▭ |
+| D2 | [Chênh lệch nghiêm trọng?] | Lane 3 | Decision ◇ |
+| G13 | Lập báo cáo riêng trình Ban GĐ | Lane 1 | Action State ▭ |
+| G14 | Hoàn thiện Biên bản kiểm kê | Lane 2 + Lane 3 | Action State ▭ (Join bar) |
+| G15 | Trình BB lên Trưởng kho | Lane 2 → Lane 1 | ▭ (transition chéo) |
+| D3 | [Trưởng kho phê duyệt?] | Lane 1 | Decision ◇ |
+| G16 | Yêu cầu kiểm tra lại mặt hàng nghi vấn | Lane 1 | Action State ▭ |
+| G17 | Ký xác nhận BB kiểm kê | Lane 1 | Action State ▭ |
+| G18 | Điều chỉnh tồn kho theo BB đã duyệt | Lane 3 | Action State ▭ |
+| End | ◉ Kết thúc | Lane 3 | Final Node (◉) |
+
+### Guard Conditions
+- D1 → G9: `[Tất cả khớp]`
+- D1 → G10: `[Có chênh lệch]`
+- D2 → G9: `[Không nghiêm trọng]`
+- D2 → G13: `[Nghiêm trọng (vượt ngưỡng)]`
+- D3 → G17: `[Hợp lệ]`
+- D3 → G16: `[Phát hiện sai sót]`
+
+### Lưu ý đặc biệt cho Rose
+- Bước G4-G5: Sử dụng **Fork Bar** (thanh ngang) để thể hiện Thủ kho và Kế toán kho kiểm đếm đồng thời.
+- Bước G14: Sử dụng **Join Bar** để hợp nhất kết quả trước khi hoàn thiện biên bản.
+
+---
+
 ## Giải thích luồng
 
 ### Luồng chính

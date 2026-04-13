@@ -49,6 +49,54 @@ flowchart TD
     style A9 fill:#d4edda,color:#155724
 ```
 
+## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
+
+### Swimlanes (Cột dọc trong Rose)
+Tạo **3 Swimlane** theo thứ tự từ trái sang phải:
+
+| Swimlane | Tên Actor |
+|---|---|
+| Lane 1 | **NV Mua hàng** |
+| Lane 2 | **Thủ kho** |
+| Lane 3 | **Trưởng kho** |
+
+### Phân bổ Action States vào từng Swimlane
+
+| Mã Node | Action State | Swimlane | Ký hiệu Rose |
+|---|---|---|---|
+| Start | ⬤ Bắt đầu | Lane 1 | Initial Node (●) |
+| A1 | Tiếp nhận hàng hóa + Hóa đơn từ NCC | Lane 1 | Action State ▭ |
+| A2 | Kiểm tra đối chiếu SL, chủng loại theo hóa đơn | Lane 1 | Action State ▭ |
+| D1 | [Hàng hóa đúng & đủ?] | Lane 1 | Decision ◇ |
+| E1 | Tách riêng hàng lỗi/thiếu | Lane 1 | Action State ▭ |
+| E2 | Lập Biên bản chênh lệch | Lane 1 | Action State ▭ |
+| E3 | Yêu cầu NCC ký xác nhận biên bản | Lane 1 | Action State ▭ |
+| E4 | Trả hàng lỗi cho NCC | Lane 1 | Action State ▭ |
+| D2 | [Còn hàng hợp lệ?] | Lane 1 | Decision ◇ |
+| A3 | Bàn giao hàng hợp lệ cho Thủ kho | Lane 1 → Lane 2 | Action State ▭ (transition bắt chéo swimlane) |
+| A4 | Kiểm tra lại lần cuối (≪include≫ UC_NV03) | Lane 2 | Action State ▭ |
+| A5 | Lập Phiếu nhập kho | Lane 2 | Action State ▭ |
+| A6 | Trình phiếu nhập lên Trưởng kho | Lane 2 → Lane 3 | Action State ▭ (transition bắt chéo) |
+| A7 | Đối chiếu phiếu với hóa đơn gốc | Lane 3 | Action State ▭ |
+| D3 | [Phê duyệt?] | Lane 3 | Decision ◇ |
+| A8 | Ghi lý do từ chối → Trả phiếu về Thủ kho | Lane 3 | Action State ▭ |
+| A9 | Ký duyệt phiếu nhập kho | Lane 3 | Action State ▭ |
+| A10 | Sắp xếp hàng hóa vào đúng vị trí trong kho | Lane 2 | Action State ▭ |
+| A11 | Cập nhật số liệu Thẻ kho / Sổ tồn kho | Lane 2 | Action State ▭ |
+| A12 | Lưu trữ hồ sơ (Phiếu NK + Hóa đơn) | Lane 2 | Action State ▭ |
+| End1 | ◉ Kết thúc (Từ chối toàn bộ) | Lane 1 | Final Node (◉) |
+| End2 | ◉ Kết thúc | Lane 2 | Final Node (◉) |
+
+### Guard Conditions (Điều kiện trên mũi tên)
+- D1 → A3: `[Đúng & Đủ]`
+- D1 → E1: `[Lỗi/Thiếu]`
+- D2 → End1: `[Không còn hàng hợp lệ]`
+- D2 → A3: `[Còn hàng hợp lệ]`
+- D3 → A9: `[Duyệt]`
+- D3 → A8: `[Từ chối]`
+
+---
+
 ## Giải thích luồng
 
 ### Luồng chính (Main Flow)

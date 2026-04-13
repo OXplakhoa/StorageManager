@@ -38,6 +38,43 @@ flowchart TD
     style E10 fill:#d4edda,color:#155724
 ```
 
+## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
+
+### Swimlanes
+| Swimlane | Tên Actor |
+|---|---|
+| Lane 1 | **Kế toán kho** |
+| Lane 2 | **Trưởng kho** |
+| Lane 3 | **Ban Giám đốc** |
+
+### Phân bổ Action States
+
+| Mã Node | Action State | Swimlane | Ký hiệu |
+|---|---|---|---|
+| Start | ⬤ Bắt đầu (đến kỳ hạn BC) | Lane 1 | Initial Node (●) |
+| E1 | Thu thập Phiếu nhập, xuất, BB kiểm kê | Lane 1 | Action State ▭ |
+| E2 | Tổng hợp số liệu NXT theo mặt hàng | Lane 1 | Action State ▭ |
+| D1 | [Số liệu khớp phiếu gốc?] | Lane 1 | Decision ◇ |
+| E3 | Đối chiếu lại từng phiếu gốc | Lane 1 | Action State ▭ |
+| E4 | Chỉnh sửa số liệu cho khớp | Lane 1 | Action State ▭ |
+| E5 | Lập BC tồn kho theo danh mục | Lane 1 | Action State ▭ |
+| E6 | Lập BC NXT theo kỳ | Lane 1 | Action State ▭ |
+| E7 | Lập DS hàng dưới mức tồn tối thiểu | Lane 1 | Action State ▭ |
+| E8 | Trình bộ báo cáo lên Trưởng kho | Lane 1 → Lane 2 | ▭ (transition chéo) |
+| D2 | [Trưởng kho xác nhận?] | Lane 2 | Decision ◇ |
+| E9 | Yêu cầu kiểm tra lại mục nghi vấn | Lane 2 | Action State ▭ |
+| E10 | Ký xác nhận bộ báo cáo | Lane 2 | Action State ▭ |
+| E11 | Gửi báo cáo đến Ban GĐ | Lane 2 → Lane 3 | ▭ (transition chéo) |
+| End | ◉ Kết thúc | Lane 3 | Final Node (◉) |
+
+### Guard Conditions
+- D1 → E5: `[Chính xác]`
+- D1 → E3: `[Sai lệch]`
+- D2 → E10: `[Hợp lệ]`
+- D2 → E9: `[Phát hiện sai]`
+
+---
+
 ## Giải thích luồng
 ### Luồng chính
 Kế toán kho thu thập chứng từ → Tổng hợp NXT → Lập 3 loại báo cáo (tồn kho, NXT, hàng dưới mức tối thiểu) → Trình Trưởng kho duyệt → Gửi Ban GĐ.
