@@ -1,42 +1,40 @@
 # Sơ đồ Tuần tự Nghiệp vụ – UC_NV04: Xử lý chênh lệch
 
-```mermaid
-sequenceDiagram
-    actor NVMH as 👷 NV Mua hàng
-    actor NCC as 🏭 Nhà cung cấp
-    actor TrK as 👔 Trưởng kho
+```plantuml
+@startuml
+title UC_NV04 – Xử lý chênh lệch (<<extend>> từ UC_NV01)
 
-    Note over NVMH, TrK: UC_NV04 – XỬ LÝ CHÊNH LỆCH (<<extend>> từ UC_NV01)
+actor "NV Mua hàng" as NVMH
+actor "Nhà cung cấp" as NCC
+actor "Trưởng kho" as TrK
 
-    Note left of NVMH: Kích hoạt khi UC_NV01<br/>phát hiện hàng lỗi/thiếu
+note left of NVMH : Kích hoạt khi UC_NV01\nphát hiện hàng lỗi/thiếu
 
-    activate NVMH
-    NVMH->>NVMH: Tách riêng hàng hóa bị lỗi / thiếu hụt
-    NVMH->>NVMH: Ghi nhận SL sai lệch + mô tả lỗi chi tiết
-    NVMH->>NVMH: Lập Biên bản chênh lệch (Nguyên nhân, SL, mô tả)
-    NVMH->>NCC: Thông báo tình trạng sự cố
-    NVMH->>NCC: Chuyển giao Biên bản chênh lệch để ký xác nhận
+activate NVMH
+NVMH -> NVMH : Tách riêng hàng hóa\nbị lỗi / thiếu hụt
+NVMH -> NVMH : Ghi nhận SL sai lệch +\nmô tả lỗi chi tiết
+NVMH -> NVMH : Lập Biên bản chênh lệch\n(Nguyên nhân, SL, mô tả)
+NVMH -> NCC : Thông báo tình trạng sự cố
+NVMH -> NCC : Chuyển giao BB chênh lệch\nđể ký xác nhận
 
-    alt ✅ NCC đồng ý ký
-        NCC->>NVMH: Ký xác nhận vào Biên bản chênh lệch
-        NVMH->>NCC: Bàn giao hàng lỗi cho NCC mang về
-        NVMH->>NVMH: Lưu trữ Biên bản (cơ sở thanh toán)
-        deactivate NVMH
-        Note right of NVMH: → Quay lại UC_NV01<br/>với phần hàng hợp lệ
-    else ❌ NCC không đồng ý ký
-        NCC-->>NVMH: Từ chối ký xác nhận
-        NVMH->>TrK: Báo cáo lên Trưởng kho
-        activate TrK
-        TrK->>NCC: Liên hệ trực tiếp để thương lượng
-        alt ✅ Thương lượng thành công
-            NCC->>TrK: Đồng ý ký biên bản
-            TrK->>NVMH: Thông báo kết quả
-            deactivate TrK
-        else ❌ Thương lượng thất bại
-            TrK->>TrK: Lập hồ sơ tranh chấp
-            TrK-->>NVMH: Chuyển hồ sơ sang Ban pháp chế
-            deactivate TrK
-        end
-        deactivate NVMH
-    end
+NCC -> NVMH : [Đồng ý] Ký xác nhận\nvào BB chênh lệch
+NVMH -> NCC : Bàn giao hàng lỗi cho NCC
+NVMH -> NVMH : Lưu trữ Biên bản\n(cơ sở thanh toán)
+deactivate NVMH
+note right of NVMH : → Quay lại UC_NV01\nvới phần hàng hợp lệ
+
+NCC --> NVMH : [Không đồng ý] Từ chối\nký xác nhận
+activate NVMH
+NVMH -> TrK : Báo cáo lên Trưởng kho
+activate TrK
+TrK -> NCC : Liên hệ trực tiếp\nđể thương lượng
+
+TrK -> NVMH : [Thương lượng OK]\nThông báo kết quả
+deactivate TrK
+deactivate NVMH
+
+TrK -> TrK : [Thương lượng thất bại]\nLập hồ sơ tranh chấp
+TrK --> NVMH : Chuyển hồ sơ\nsang Ban pháp chế
+
+@enduml
 ```

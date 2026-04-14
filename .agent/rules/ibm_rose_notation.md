@@ -45,17 +45,28 @@ Vì Mermaid `flowchart` không hỗ trợ swimlane, mỗi Activity Diagram phả
 | →  (Synchronous Message) | Thông điệp đồng bộ | Mũi tên liền nét, đầu tam giác đặc (filled arrowhead) |
 | ⇢ (Asynchronous Message) | Thông điệp bất đồng bộ | Mũi tên liền nét, đầu mũi tên hở (open arrowhead) |
 | ⇠ (Return Message) | Thông điệp trả về | Mũi tên đứt nét (dashed arrow) |
-| [alt] | Combined Fragment – Alt | Rẽ nhánh (if/else) – có đường kẻ ngang phân cách các nhánh |
-| [opt] | Combined Fragment – Opt | Tùy chọn (if only, không có else) |
-| [loop] | Combined Fragment – Loop | Vòng lặp |
-| [ref] | Interaction Reference | Tham chiếu đến sơ đồ tuần tự khác (dùng cho <<include>>) |
 
-### Quy tắc quan trọng trong Rose:
+> **⚠️ QUAN TRỌNG: IBM Rational Rose KHÔNG hỗ trợ Interaction Fragments (UML 2.x)!**
+>
+> Rose dựa trên UML 1.x, do đó **KHÔNG CÓ** các vùng bao (combined fragments) như `alt`, `opt`, `loop`, `ref`.
+> Phải thay thế bằng các kỹ thuật UML 1.x tương đương.
+
+### Cách thay thế Interaction Fragments trong Rose:
+
+| Fragment UML 2.x | KHÔNG dùng trong Rose | Thay thế bằng (UML 1.x) |
+|---|---|---|
+| `alt` (if/else) | ❌ | **Guard condition** `[điều kiện]` đặt trước tên message trên mũi tên. Ví dụ: `[Hàng đúng & đủ] Bàn giao hàng` và `[Hàng lỗi/thiếu] Tách riêng hàng` |
+| `opt` (if only) | ❌ | **Guard condition** `[nếu có]` trên message. Ví dụ: `[Sai lệch] Đối chiếu lại phiếu gốc` |
+| `loop` (vòng lặp) | ❌ | **Note** ghi chú "Lặp lại cho từng mặt hàng" + mũi tên quay về chính mình hoặc quay lại bước trước |
+| `ref` (tham chiếu) | ❌ | **Note** ghi chú "Xem sơ đồ UC_NV03" hoặc sử dụng Self-message + Note |
+
+### Quy tắc Sequence Diagram trong Rose:
 1. **Message = Hành động**: Tên message nên là **động từ + tân ngữ** (ví dụ: "Lập phiếu nhập kho", "Ký duyệt phiếu").
-2. **Dùng `alt` cho if/else**, `opt` cho if-only, `loop` cho vòng lặp.
-3. **`<<include>>`**: Dùng `ref` fragment trỏ đến UC_NV03 thay vì vẽ lại toàn bộ.
-4. **`<<extend>>`**: Dùng `opt` fragment với guard condition `[Hàng lỗi/thiếu]`.
-5. **Self-message**: Mũi tên quay lại chính lifeline đó (ví dụ: "Đối chiếu số liệu").
+2. **Guard condition** `[điều kiện]` đặt TRƯỚC tên message trên mũi tên: `[Đủ hàng] Lập Phiếu xuất kho`.
+3. **Rẽ nhánh**: Từ cùng 1 lifeline, vẽ 2 mũi tên với 2 guard conditions khác nhau đi đến cùng hoặc khác lifeline.
+4. **`<<include>>`**: Dùng **Note** gắn vào message: "Xem chi tiết tại sơ đồ tuần tự UC_NV03".
+5. **`<<extend>>`**: Dùng guard condition `[Hàng lỗi/thiếu]` trên message kích hoạt UC mở rộng.
+6. **Self-message**: Mũi tên quay lại chính lifeline đó (ví dụ: "Đối chiếu số liệu").
 
 ---
 

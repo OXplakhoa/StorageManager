@@ -1,60 +1,53 @@
 # Sơ đồ Tuần tự Nghiệp vụ – UC_NV01: Nhập kho hàng hóa
 
-## Mô tả
-Sơ đồ tuần tự thể hiện trình tự tương tác giữa các tác nhân nghiệp vụ trong quy trình nhập kho hàng hóa theo trục thời gian.
+## Luồng chính + Luồng phụ (gộp)
 
-```mermaid
-sequenceDiagram
-    actor NCC as 🏭 Nhà cung cấp
-    actor NVMH as 👷 NV Mua hàng
-    actor TK as 📦 Thủ kho
-    actor TrK as 👔 Trưởng kho
+```plantuml
+@startuml
+title UC_NV01 – Nhập kho hàng hóa
 
-    Note over NCC, TrK: UC_NV01 – QUY TRÌNH NHẬP KHO HÀNG HÓA
+actor "Nhà cung cấp" as NCC
+actor "NV Mua hàng" as NVMH
+actor "Thủ kho" as TK
+actor "Trưởng kho" as TrK
 
-    NCC->>NVMH: Giao hàng hóa + Hóa đơn mua hàng
-    activate NVMH
-    
-    NVMH->>NVMH: Kiểm tra đối chiếu SL, chủng loại theo hóa đơn
-    
-    Note right of NVMH: <<include>> UC_NV03<br/>Kiểm tra hàng hóa
+NCC -> NVMH : Giao hàng hóa + Hóa đơn mua hàng
+activate NVMH
+NVMH -> NVMH : Kiểm tra đối chiếu SL,\nchủng loại theo hóa đơn
+note right of NVMH : <<include>> UC_NV03\nKiểm tra hàng hóa
 
-    alt ✅ Hàng hóa đúng & đủ
-        NVMH->>TK: Bàn giao hàng hợp lệ + Hóa đơn
-        deactivate NVMH
-        activate TK
-        
-        TK->>TK: Kiểm tra lại lần cuối (ngoại quan, SL)
-        TK->>TK: Lập Phiếu nhập kho (Số phiếu, ngày, NCC, chi tiết hàng)
-        TK->>TrK: Trình Phiếu nhập kho để phê duyệt
-        deactivate TK
-        activate TrK
-        
-        TrK->>TrK: Đối chiếu Phiếu NK với Hóa đơn gốc
-        
-        alt ✅ Phê duyệt
-            TrK->>TK: Ký duyệt Phiếu nhập kho
-            deactivate TrK
-            activate TK
-            TK->>TK: Sắp xếp hàng vào vị trí kho
-            TK->>TK: Cập nhật Thẻ kho / Sổ tồn kho
-            TK->>TK: Lưu trữ hồ sơ (Phiếu NK + HĐ)
-            deactivate TK
-        else ❌ Từ chối
-            TrK-->>TK: Trả phiếu + Ghi lý do từ chối
-            deactivate TrK
-            Note right of TK: Thủ kho sửa lại phiếu<br/>và trình lại
-        end
-        
-    else ❌ Hàng lỗi / Thiếu (<<extend>> UC_NV04)
-        Note over NVMH, NCC: Kích hoạt UC_NV04 –<br/>Xử lý chênh lệch
-        NVMH->>NVMH: Tách riêng hàng lỗi/thiếu
-        NVMH->>NVMH: Lập Biên bản chênh lệch
-        NVMH->>NCC: Yêu cầu ký xác nhận Biên bản
-        NCC->>NVMH: Ký xác nhận Biên bản chênh lệch
-        NVMH->>NCC: Trả hàng lỗi cho NCC
-        deactivate NVMH
-        
-        Note right of NVMH: Nếu còn hàng hợp lệ<br/>→ Tiếp tục bàn giao<br/>cho Thủ kho
-    end
+NVMH -> TK : [Hàng đúng & đủ] Bàn giao hàng hợp lệ + Hóa đơn
+deactivate NVMH
+
+activate TK
+TK -> TK : Kiểm tra lại lần cuối\n(ngoại quan, SL)
+TK -> TK : Lập Phiếu nhập kho\n(Số phiếu, ngày, NCC, chi tiết hàng)
+TK -> TrK : Trình Phiếu nhập kho để phê duyệt
+deactivate TK
+
+activate TrK
+TrK -> TrK : Đối chiếu Phiếu NK\nvới Hóa đơn gốc
+TrK -> TK : [Duyệt] Ký duyệt Phiếu nhập kho
+deactivate TrK
+
+activate TK
+TK -> TK : Sắp xếp hàng vào vị trí kho
+TK -> TK : Cập nhật Thẻ kho / Sổ tồn kho
+TK -> TK : Lưu trữ hồ sơ\n(Phiếu NK + Hóa đơn)
+deactivate TK
+
+TrK --> TK : [Từ chối] Trả phiếu +\nGhi lý do từ chối
+note right of TK : Thủ kho sửa lại phiếu\nvà trình lại
+
+NVMH -> NVMH : [Hàng lỗi/thiếu] Tách riêng hàng lỗi
+activate NVMH
+note right of NVMH : <<extend>> UC_NV04\nXử lý chênh lệch
+NVMH -> NVMH : Lập Biên bản chênh lệch
+NVMH -> NCC : Yêu cầu NCC ký xác nhận BB
+NCC -> NVMH : Ký xác nhận BB chênh lệch
+NVMH -> NCC : Trả hàng lỗi cho NCC
+deactivate NVMH
+note over NVMH : Nếu còn hàng hợp lệ\n→ Tiếp tục bàn giao\ncho Thủ kho
+
+@enduml
 ```

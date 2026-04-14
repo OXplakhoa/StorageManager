@@ -1,51 +1,38 @@
 # Sơ đồ Tuần tự Nghiệp vụ – UC_NV06: Quản lý danh mục cơ sở
 
-```mermaid
-sequenceDiagram
-    actor TrK as 👔 Trưởng kho
-    actor KTK as 📊 Kế toán kho
-    actor TK as 📦 Thủ kho
-    participant DM as 📋 Sổ Danh mục<br/>(NCC / Hàng hóa)
+```plantuml
+@startuml
+title UC_NV06 – Quản lý danh mục cơ sở
 
-    Note over TrK, DM: UC_NV06 – QUẢN LÝ DANH MỤC CƠ SỞ
+actor "Trưởng kho" as TrK
+actor "Kế toán kho" as KTK
+actor "Thủ kho" as TK
+participant "Sổ Danh mục\n(NCC / Hàng hóa)" as DM
 
-    alt Yêu cầu từ chỉ đạo
-        TrK->>KTK: Chỉ đạo cập nhật danh mục (NCC mới / Hàng mới)
-    else Yêu cầu từ thực tế
-        Note left of KTK: Phát sinh từ nhu cầu<br/>thực tế (NCC mới liên hệ,<br/>hàng mới nhập về)
-    end
-    
-    activate KTK
+TrK -> KTK : [Từ chỉ đạo] Chỉ đạo\ncập nhật danh mục
+note left of KTK : Hoặc phát sinh từ\nnhu cầu thực tế\n(NCC mới, hàng mới)
 
-    alt 🏭 Cập nhật Danh mục NCC
-        KTK->>KTK: Thu thập thông tin NCC (Mã, Tên, ĐC, SĐT, Email, MST)
-        KTK->>DM: Kiểm tra NCC đã tồn tại?
-        DM-->>KTK: Kết quả tra cứu
+activate KTK
 
-        alt Chưa tồn tại
-            KTK->>DM: Thêm mới NCC vào danh mục
-        else Đã tồn tại
-            KTK->>DM: Cập nhật thông tin NCC
-        end
+KTK -> KTK : [Danh mục NCC] Thu thập\nthông tin NCC\n(Mã, Tên, ĐC, SĐT, Email, MST)
+KTK -> DM : Kiểm tra NCC đã tồn tại?
+DM --> KTK : Kết quả tra cứu
+KTK -> DM : [Chưa tồn tại] Thêm mới\nNCC vào danh mục
+KTK -> DM : [Đã tồn tại] Cập nhật\nthông tin NCC
 
-    else 📦 Cập nhật Danh mục Hàng hóa
-        KTK->>KTK: Thu thập thông tin HH (Mã, Tên, ĐVT, Quy cách, Nhóm, HM tồn min)
-        KTK->>DM: Kiểm tra Hàng hóa đã tồn tại?
-        DM-->>KTK: Kết quả tra cứu
+KTK -> KTK : [Danh mục HH] Thu thập\nthông tin HH\n(Mã, Tên, ĐVT, Quy cách,\nNhóm, HM tồn min)
+KTK -> DM : Kiểm tra HH đã tồn tại?
+DM --> KTK : Kết quả tra cứu
+KTK -> DM : [Chưa tồn tại] Thêm mới\nHàng hóa
+KTK -> DM : [Đã có & còn KD] Cập nhật\nthông tin HH
+KTK -> DM : [Đã có & ngừng KD] Đánh dấu\n"Ngừng hoạt động"
 
-        alt Chưa tồn tại
-            KTK->>DM: Thêm mới Hàng hóa vào danh mục
-        else Đã tồn tại & còn kinh doanh
-            KTK->>DM: Cập nhật thông tin Hàng hóa
-        else Đã tồn tại & ngừng kinh doanh
-            KTK->>DM: Đánh dấu "Ngừng hoạt động" (không xóa)
-        end
-    end
+KTK -> KTK : Kiểm tra tính chính xác\n& không trùng lặp
+KTK -> DM : Lưu trữ danh mục đã cập nhật
+KTK -> TK : Thông báo danh mục\nđã cập nhật
+deactivate KTK
 
-    KTK->>KTK: Kiểm tra tính chính xác & không trùng lặp
-    KTK->>DM: Lưu trữ danh mục đã cập nhật
-    KTK->>TK: Thông báo danh mục đã cập nhật
-    deactivate KTK
-    
-    Note right of TK: Thủ kho & NV mua hàng<br/>sử dụng danh mục mới<br/>khi lập phiếu
+note right of TK : Thủ kho & NV mua hàng\nsử dụng danh mục mới\nkhi lập phiếu
+
+@enduml
 ```

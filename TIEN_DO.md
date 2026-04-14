@@ -1,8 +1,8 @@
 # 📋 TIẾN ĐỘ DỰ ÁN – PTTKHT Quản lý Kho hàng (Nhóm 11)
 
-> **Cập nhật lần cuối:** 13/04/2026 – 23:22  
+> **Cập nhật lần cuối:** 14/04/2026 – 10:40  
 > **Deadline:** Thứ 7, 18/04/2026  
-> **Trạng thái tổng thể:** 🟡 Đang thực hiện (Hoàn thành ~40%)
+> **Trạng thái tổng thể:** 🟡 Đang thực hiện (Hoàn thành ~45%)
 
 ---
 
@@ -10,12 +10,12 @@
 
 ```
 Chương 1 – Tổng quan               ██░░░░░░░░  20%  (Đã có sẵn từ docx, cần bổ sung)
-Chương 2 – Phân tích hệ thống      ██████████  80%  (Xong NV + HT, còn Class Diagram)
+Chương 2 – Phân tích hệ thống      ██████████ 100%  ✅ HOÀN THÀNH!
 Chương 3 – Thiết kế hệ thống       ░░░░░░░░░░   0%
 Chương 4 – Kết luận                 ░░░░░░░░░░   0%
 Web App                             ░░░░░░░░░░   0%
 ────────────────────────────────────────────────────
-TỔNG                                ██████░░░░  ~40%
+TỔNG                                ██████░░░░  ~45%
 ```
 
 ---
@@ -74,7 +74,7 @@ TỔNG                                ██████░░░░  ~40%
 #### 2.4 Mô hình hóa Cấu trúc (Trọng số: 30%)
 | # | Hạng mục | Trạng thái | File output |
 |---|---|---|---|
-| 2.4.1 | Sơ đồ lớp mức phân tích (Analysis Class Diagram) | ⬜ Chưa làm | — |
+| 2.4.1 | Sơ đồ lớp mức phân tích (17 Entity Classes) | ✅ Xong | [`diagrams/class_phan_tich.md`](file:///Users/khoado/code/PTTKHT/diagrams/class_phan_tich.md) |
 
 ---
 
@@ -155,3 +155,13 @@ TỔNG                                ██████░░░░  ~40%
 | 13/04 – 23:12 | ✅ Tạo file TIEN_DO.md (file này) |
 | 13/04 – 23:22 | ✅ Sơ đồ Use Case Hệ thống (17 UC) + Ma trận truy vết NV→HT + Hướng dẫn Rose |
 | 13/04 – 23:22 | ✅ Đặc tả chi tiết 17 UC hệ thống (2 file: P1 UC01→09, P2 UC10→17 bao gồm 2 AI) |
+| 14/04 – 10:15 | 🐛 Fix: Sơ đồ UC Nghiệp vụ – Loại bỏ Business Worker (Thủ kho, NV MH, KTK, TrK) khỏi Actor, chỉ giữ Business Actor (NCC, BPYC, BGĐ) |
+| 14/04 – 10:16 | 🐛 Fix: Sequence Diagrams NV01, 02, 04, 05, 07 – Sửa lỗi Mermaid `deactivate inactive participant` (di chuyển deactivate ra sau block alt/end) |
+| 14/04 – 10:35 | 📝 Cập nhật `.agent/rules/ibm_rose_notation.md` – Ghi rõ Rose KHÔNG hỗ trợ Interaction Fragments (alt/opt/loop/ref), bổ sung bảng thay thế bằng guard conditions |
+| 14/04 – 10:36 | 📝 Tạo `.agent/skills/plantuml_best_practices.md` – Hướng dẫn PlantUML cho Sequence, Activity, UC, Class Diagram |
+| 14/04 – 10:38 | 🔄 Chuyển đổi toàn bộ 7 Sequence Diagrams NV từ Mermaid → **PlantUML** |
+| 14/04 – 10:40 | ✅ Sơ đồ lớp mức phân tích (17 Entity Classes, PlantUML) + Ma trận truy vết UC→Class + Hướng dẫn Rose |
+| 14/04 – 10:40 | 🎉 **CHƯƠNG 2 HOÀN THÀNH 100%!** |
+| 14/04 – 11:15 | 🐛 Fix: Bỏ toàn bộ dividers/separators (`== ... ==`) khỏi 7 Sequence Diagrams NV – IBM Rose không hỗ trợ. Chỉ còn guard conditions thuần tuý trên messages |
+| 14/04 – 11:15 | 📝 Cập nhật `.agent/skills/plantuml_best_practices.md` – Ghi rõ KHÔNG dùng dividers |
+
