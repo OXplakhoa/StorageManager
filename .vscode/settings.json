@@ -1,0 +1,14 @@
+{
+  "plantuml.commandArgs": [
+    "-DGRAPHVIZ_DOT=/opt/homebrew/bin/dot"
+  ],
+  "plantuml.render": "Local",
+  "plantuml.java": "java",
+  "plantuml.diagramsRoot": "diagrams",
+  "plantuml.exportOutDir": "diagrams/out",
+  "plantuml.server": "https://www.plantuml.com/plantuml",
+  "plantuml.urlFormat": "svg",
+  "terminal.integrated.env.osx": {
+    "GRAPHVIZ_DOT": "/opt/homebrew/bin/dot"
+  }
+}

@@ -34,116 +34,118 @@ Sơ đồ Use Case hệ thống mô tả các **chức năng mà phần mềm ph
 
 ## Sơ đồ Use Case Hệ thống
 
-```mermaid
-flowchart LR
-    %% ===== TÁC NHÂN HỆ THỐNG =====
-    TK["📦 Thủ kho"]
-    TrK["👔 Trưởng kho"]
-    KTK["📊 Kế toán kho"]
-    BPYC["🏢 Bộ phận<br/>yêu cầu"]
-    BGD["🏛️ Ban Giám đốc"]
+```plantuml
+@startuml
+left to right direction
+skinparam usecase {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+skinparam actor {
+  BorderColor Black
+}
+skinparam rectangle {
+  BorderColor #4a6fa5
+  BackgroundColor #f0f4ff
+}
 
-    %% ===== RANH GIỚI HỆ THỐNG =====
-    subgraph boundary["🖥️ HỆ THỐNG THÔNG TIN QUẢN LÝ KHO HÀNG – Công ty Minh Phát"]
-        direction TB
+' ===== TAC NHAN HE THONG (BEN TRAI) =====
+actor "Thu kho" as TK
+actor "Ke toan kho" as KTK
+actor "Bo phan\nyeu cau" as BPYC
 
-        subgraph grp_auth["🔐 Nền tảng"]
-            UC01(["UC_HT01<br/>Đăng nhập /<br/>Phân quyền"])
-        end
+' ===== TAC NHAN HE THONG (BEN PHAI) =====
+actor "Truong kho" as TrK
+actor "Ban Giam doc" as BGD
 
-        subgraph grp_catalog["📋 Quản lý Danh mục"]
-            UC02(["UC_HT02<br/>Quản lý danh mục<br/>Nhà cung cấp"])
-            UC03(["UC_HT03<br/>Quản lý danh mục<br/>Hàng hóa"])
-        end
+' ===== RANH GIOI HE THONG =====
+rectangle "HTTT Quan ly Kho hang\nCong ty Minh Phat" {
 
-        subgraph grp_import["📥 Nghiệp vụ Nhập kho"]
-            UC04(["UC_HT04<br/>Lập Phiếu<br/>nhập kho"])
-            UC05(["UC_HT05<br/>Phê duyệt Phiếu<br/>nhập kho"])
-            UC09a(["UC_HT09<br/>Kiểm tra hàng hóa<br/>(tự động đối chiếu)"])
-            UC10(["UC_HT10<br/>Lập Biên bản<br/>chênh lệch"])
-        end
+  ' --- Nen tang ---
+  usecase "UC_HT01\nDang nhap /\nPhan quyen" as UC01
 
-        subgraph grp_export["📤 Nghiệp vụ Xuất kho"]
-            UC06(["UC_HT06<br/>Lập Phiếu đề nghị<br/>xuất kho"])
-            UC07(["UC_HT07<br/>Lập Phiếu<br/>xuất kho"])
-            UC08(["UC_HT08<br/>Phê duyệt Phiếu<br/>xuất kho"])
-        end
+  ' --- Quan ly Danh muc ---
+  usecase "UC_HT02\nQuan ly danh muc\nNha cung cap" as UC02
+  usecase "UC_HT03\nQuan ly danh muc\nHang hoa" as UC03
 
-        subgraph grp_audit["📝 Kiểm kê"]
-            UC11(["UC_HT11<br/>Lập kế hoạch<br/>kiểm kê"])
-            UC12(["UC_HT12<br/>Thực hiện kiểm kê<br/>& Lập Biên bản"])
-        end
+  ' --- Nghiep vu Nhap kho ---
+  usecase "UC_HT04\nLap Phieu\nnhap kho" as UC04
+  usecase "UC_HT05\nPhe duyet Phieu\nnhap kho" as UC05
+  usecase "UC_HT09\nKiem tra hang hoa\n(tu dong doi chieu)" as UC09
+  usecase "UC_HT10\nLap Bien ban\nchenh lech" as UC10
 
-        subgraph grp_report["📈 Báo cáo & Tra cứu"]
-            UC13(["UC_HT13<br/>Xem Báo cáo<br/>Nhập–Xuất–Tồn"])
-            UC14(["UC_HT14<br/>Xem Báo cáo hàng<br/>dưới mức tối thiểu"])
-            UC15(["UC_HT15<br/>Tra cứu lịch sử<br/>Nhập / Xuất"])
-        end
+  ' --- Nghiep vu Xuat kho ---
+  usecase "UC_HT06\nLap Phieu de nghi\nxuat kho" as UC06
+  usecase "UC_HT07\nLap Phieu\nxuat kho" as UC07
+  usecase "UC_HT08\nPhe duyet Phieu\nxuat kho" as UC08
 
-        subgraph grp_ai["🤖 Tính năng AI"]
-            UC16(["UC_HT16<br/>🤖 Dự báo nhu cầu<br/>tiêu thụ (AI)"])
-            UC17(["UC_HT17<br/>🤖 Cảnh báo tồn kho<br/>thông minh (AI)"])
-        end
-    end
+  ' --- Kiem ke ---
+  usecase "UC_HT11\nLap ke hoach\nkiem ke" as UC11
+  usecase "UC_HT12\nThuc hien kiem ke\nva Lap Bien ban" as UC12
 
-    %% ===== QUAN HỆ ACTOR - USE CASE =====
-    %% Đăng nhập (tất cả)
-    TK --- UC01
-    TrK --- UC01
-    KTK --- UC01
-    BPYC --- UC01
-    BGD --- UC01
+  ' --- Bao cao va Tra cuu ---
+  usecase "UC_HT13\nXem Bao cao\nNhap-Xuat-Ton" as UC13
+  usecase "UC_HT14\nXem Bao cao hang\nduoi muc toi thieu" as UC14
+  usecase "UC_HT15\nTra cuu lich su\nNhap / Xuat" as UC15
 
-    %% Danh mục
-    KTK --- UC02
-    KTK --- UC03
-    TK --- UC03
+  ' --- Tinh nang AI ---
+  usecase "UC_HT16\nDu bao nhu cau\ntieu thu (AI)" as UC16
+  usecase "UC_HT17\nCanh bao ton kho\nthong minh (AI)" as UC17
+}
 
-    %% Nhập kho
-    TK --- UC04
-    TK --- UC09a
-    TK --- UC10
-    TrK --- UC05
+' ===== QUAN HE ACTOR - USE CASE =====
 
-    %% Xuất kho
-    BPYC --- UC06
-    TK --- UC07
-    TrK --- UC08
+' -- Dang nhap (tat ca) --
+TK -- UC01
+TrK -- UC01
+KTK -- UC01
+BPYC -- UC01
+BGD -- UC01
 
-    %% Kiểm kê
-    TrK --- UC11
-    TK --- UC12
-    KTK --- UC12
+' -- Danh muc --
+KTK -- UC02
+KTK -- UC03
+TK -- UC03
 
-    %% Báo cáo
-    KTK --- UC13
-    KTK --- UC14
-    TrK --- UC13
-    TrK --- UC14
-    TK --- UC15
-    KTK --- UC15
-    BGD --- UC13
+' -- Nhap kho --
+TK -- UC04
+TK -- UC09
+TK -- UC10
+TrK -- UC05
 
-    %% AI
-    TrK --- UC16
-    TrK --- UC17
-    TK --- UC17
-    BGD --- UC16
+' -- Xuat kho --
+BPYC -- UC06
+TK -- UC07
+TrK -- UC08
 
-    %% ===== QUAN HỆ INCLUDE / EXTEND =====
-    UC04 -->|"≪include≫"| UC09a
-    UC07 -->|"≪include≫"| UC09a
-    UC04 -.->|"≪extend≫<br/>[Phát hiện<br/>chênh lệch]"| UC10
+' -- Kiem ke --
+TrK -- UC11
+TK -- UC12
+KTK -- UC12
 
-    %% ===== STYLING =====
-    style boundary fill:#f0f4ff,stroke:#4a6fa5,stroke-width:2px,color:#1a1a2e
-    style grp_auth fill:#e8eaf6,stroke:#5c6bc0
-    style grp_catalog fill:#e8f5e9,stroke:#66bb6a
-    style grp_import fill:#e3f2fd,stroke:#42a5f5
-    style grp_export fill:#fff3e0,stroke:#ffa726
-    style grp_audit fill:#f3e5f5,stroke:#ab47bc
-    style grp_report fill:#e0f7fa,stroke:#26c6da
-    style grp_ai fill:#fce4ec,stroke:#ef5350
+' -- Bao cao --
+KTK -- UC13
+KTK -- UC14
+TrK -- UC13
+TrK -- UC14
+TK -- UC15
+KTK -- UC15
+BGD -- UC13
+
+' -- AI --
+TrK -- UC16
+TrK -- UC17
+TK -- UC17
+BGD -- UC16
+
+' ===== QUAN HE INCLUDE / EXTEND =====
+UC04 ..> UC09 : <<include>>
+UC07 ..> UC09 : <<include>>
+UC10 ..> UC04 : <<extend>>
+note on link : [Phat hien chenh lech]
+
+@enduml
 ```
 
 ---
@@ -182,3 +184,25 @@ flowchart LR
 > **⚠️ Chiều mũi tên Rose:**  
 > - `<<include>>`: UC chính → UC phụ  
 > - `<<extend>>`: UC mở rộng → UC chính
+
+### Tổng hợp 17 Use Case Hệ thống
+
+| Mã | Tên Use Case | Nhóm chức năng |
+|---|---|---|
+| UC_HT01 | Đăng nhập / Phân quyền | Nền tảng |
+| UC_HT02 | Quản lý danh mục Nhà cung cấp | Danh mục |
+| UC_HT03 | Quản lý danh mục Hàng hóa | Danh mục |
+| UC_HT04 | Lập Phiếu nhập kho | Nhập kho |
+| UC_HT05 | Phê duyệt Phiếu nhập kho | Nhập kho |
+| UC_HT06 | Lập Phiếu đề nghị xuất kho | Xuất kho |
+| UC_HT07 | Lập Phiếu xuất kho | Xuất kho |
+| UC_HT08 | Phê duyệt Phiếu xuất kho | Xuất kho |
+| UC_HT09 | Kiểm tra hàng hóa (tự động đối chiếu) | Nhập/Xuất kho |
+| UC_HT10 | Lập Biên bản chênh lệch | Nhập kho |
+| UC_HT11 | Lập kế hoạch kiểm kê | Kiểm kê |
+| UC_HT12 | Thực hiện kiểm kê và Lập Biên bản | Kiểm kê |
+| UC_HT13 | Xem Báo cáo Nhập–Xuất–Tồn | Báo cáo |
+| UC_HT14 | Xem Báo cáo hàng dưới mức tối thiểu | Báo cáo |
+| UC_HT15 | Tra cứu lịch sử Nhập / Xuất | Tra cứu |
+| UC_HT16 | Dự báo nhu cầu tiêu thụ (AI) | AI |
+| UC_HT17 | Cảnh báo tồn kho thông minh (AI) | AI |

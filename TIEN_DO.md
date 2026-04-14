@@ -167,3 +167,4 @@ TỔNG                                ██████░░░░  ~45%
 | 14/04 – 17:23 | 📚 Đọc giáo trình `Bai giang TH PTTK HT_14DHTH.pdf` (63 trang) → Tạo `.agent/skills/giao_trinh_pttkht.md` tổng hợp kiến thức |
 | 14/04 – 17:26 | ✅ Bổ sung **Business Entity** (`<<Business Entity>>`) vào 7 Sequence Diagrams NV: Phiếu NK/XK, Thẻ kho, BB chênh lệch, BB kiểm kê, Báo cáo kho, Sổ Danh mục |
 | 14/04 – 17:36 | 🔄 Chuyển đổi 7 Activity Diagrams Mermaid → **PlantUML** (Swimlane `\|Tên\|` + Business Entity `<<Business Entity>>` trong action text + fork/join cho NV07) |
+| 14/04 – 20:22 | 🔄 Viết lại Sơ đồ UC Hệ thống Mermaid → **PlantUML** (5 actors, 17 UC, 2 include, 1 extend, System Boundary rectangle) – Validated OK |
