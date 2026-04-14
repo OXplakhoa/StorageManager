@@ -5,8 +5,8 @@
 title UC_NV03 – Kiểm tra hàng hóa (<<include>>)
 
 actor "Thừa tác viên\n(NV Mua hàng / Thủ kho)" as TAV
-participant "Chứng từ gốc\n(Hóa đơn / Phiếu ĐN)" as CT
-participant "Hàng hóa vật lý" as HH
+entity "Chứng từ gốc\n(Hóa đơn / Phiếu ĐN)" as CT <<Business Entity>>
+entity "Hàng hóa\nvật lý" as HH <<Business Entity>>
 
 note over TAV, HH : UC này được gọi <<include>>\ntừ UC_NV01 hoặc UC_NV02
 
@@ -14,7 +14,7 @@ TAV -> CT : Tiếp nhận chứng từ gốc
 TAV -> HH : Tiếp nhận hàng hóa vật lý
 activate TAV
 
-TAV -> HH : Đếm số lượng hàng hóa thực tế
+TAV -> HH : Đếm số lượng\nhàng hóa thực tế
 TAV -> HH : Kiểm tra ngoại quan\n(bao bì, HSD, móp méo)
 TAV -> CT : Đọc số liệu trên chứng từ
 TAV -> TAV : Đối chiếu chéo\nSL + CL thực tế vs chứng từ

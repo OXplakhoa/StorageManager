@@ -7,9 +7,9 @@ title UC_NV06 – Quản lý danh mục cơ sở
 actor "Trưởng kho" as TrK
 actor "Kế toán kho" as KTK
 actor "Thủ kho" as TK
-participant "Sổ Danh mục\n(NCC / Hàng hóa)" as DM
+entity "Sổ Danh mục\n(NCC / Hàng hóa)" as DM <<Business Entity>>
 
-TrK -> KTK : [Từ chỉ đạo] Chỉ đạo\ncập nhật danh mục
+TrK -> KTK : [Từ chỉ đạo]\nChỉ đạo cập nhật danh mục
 note left of KTK : Hoặc phát sinh từ\nnhu cầu thực tế\n(NCC mới, hàng mới)
 
 activate KTK
@@ -27,7 +27,7 @@ KTK -> DM : [Chưa tồn tại] Thêm mới\nHàng hóa
 KTK -> DM : [Đã có & còn KD] Cập nhật\nthông tin HH
 KTK -> DM : [Đã có & ngừng KD] Đánh dấu\n"Ngừng hoạt động"
 
-KTK -> KTK : Kiểm tra tính chính xác\n& không trùng lặp
+KTK -> DM : Kiểm tra tính chính xác\n& không trùng lặp
 KTK -> DM : Lưu trữ danh mục đã cập nhật
 KTK -> TK : Thông báo danh mục\nđã cập nhật
 deactivate KTK

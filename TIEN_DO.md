@@ -164,4 +164,6 @@ TỔNG                                ██████░░░░  ~45%
 | 14/04 – 10:40 | 🎉 **CHƯƠNG 2 HOÀN THÀNH 100%!** |
 | 14/04 – 11:15 | 🐛 Fix: Bỏ toàn bộ dividers/separators (`== ... ==`) khỏi 7 Sequence Diagrams NV – IBM Rose không hỗ trợ. Chỉ còn guard conditions thuần tuý trên messages |
 | 14/04 – 11:15 | 📝 Cập nhật `.agent/skills/plantuml_best_practices.md` – Ghi rõ KHÔNG dùng dividers |
+| 14/04 – 17:23 | 📚 Đọc giáo trình `Bai giang TH PTTK HT_14DHTH.pdf` (63 trang) → Tạo `.agent/skills/giao_trinh_pttkht.md` tổng hợp kiến thức |
+| 14/04 – 17:26 | ✅ Bổ sung **Business Entity** (`<<Business Entity>>`) vào 7 Sequence Diagrams NV: Phiếu NK/XK, Thẻ kho, BB chênh lệch, BB kiểm kê, Báo cáo kho, Sổ Danh mục |
 
