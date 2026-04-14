@@ -1,98 +1,55 @@
 # Sơ đồ Hoạt động – UC_NV06: Quản lý danh mục cơ sở
 
-## Mô tả
-Quy trình thiết lập, duy trì và cập nhật các thông tin nền tảng (danh mục Nhà cung cấp và danh mục Hàng hóa) phục vụ cho toàn bộ hoạt động nghiệp vụ kho hàng.
+```plantuml
+@startuml
+title UC_NV06 – Quản lý danh mục cơ sở
 
-```mermaid
-flowchart TD
-    Start(["⬤ Bắt đầu"])
+|Kế toán kho|
+start
+note right: Yêu cầu cập nhật từ\nchỉ đạo Trưởng kho\nhoặc nhu cầu thực tế
 
-    Start --> F1["Kế toán kho / Thủ kho:<br/>Nhận yêu cầu cập nhật<br/>danh mục (từ thực tế<br/>hoặc chỉ đạo Trưởng kho)"]
-    F1 --> D1{"Loại danh mục<br/>cần cập nhật?"}
+if (Loại danh mục?) then (Danh mục NCC)
 
-    D1 -->|"🏭 Nhà cung cấp"| NCC1["Thu thập thông tin NCC:<br/>Mã NCC, Tên, Địa chỉ,<br/>SĐT, Email, MST"]
-    D1 -->|"📦 Hàng hóa"| HH1["Thu thập thông tin HH:<br/>Mã hàng, Tên, ĐVT,<br/>Quy cách, Nhóm hàng,<br/>Hạn mức tồn tối thiểu"]
+  :Thu thập thông tin NCC
+  (Mã, Tên, ĐC, SĐT, Email, MST);
+  :Tra cứu **Sổ Danh mục NCC** <<Business Entity>>;
 
-    NCC1 --> D2{"NCC đã tồn tại<br/>trong danh mục?"}
-    HH1 --> D3{"Hàng hóa đã<br/>tồn tại trong<br/>danh mục?"}
+  if (NCC đã tồn tại?) then (Chưa có)
+    :Thêm mới NCC vào
+    **Sổ Danh mục NCC** <<Business Entity>>;
+  else (Đã có)
+    :Cập nhật thông tin NCC
+    trong **Sổ Danh mục NCC** <<Business Entity>>;
+  endif
 
-    D2 -->|"❌ Chưa có"| NCC2["Thêm mới NCC<br/>vào danh mục"]
-    D2 -->|"✅ Đã có"| NCC3["Cập nhật / Sửa đổi<br/>thông tin NCC"]
+else (Danh mục Hàng hóa)
 
-    D3 -->|"❌ Chưa có"| HH2["Thêm mới Hàng hóa<br/>vào danh mục"]
-    D3 -->|"✅ Đã có"| D4{"Hàng hóa<br/>còn kinh doanh?"}
-    D4 -->|"✅ Còn KD"| HH3["Cập nhật / Sửa đổi<br/>thông tin Hàng hóa"]
-    D4 -->|"❌ Ngừng KD"| HH4["Đánh dấu trạng thái<br/>'Ngừng hoạt động'<br/>(Không xóa vĩnh viễn)"]
+  :Thu thập thông tin HH
+  (Mã, Tên, ĐVT, Quy cách,
+  Nhóm, Hạn mức tồn min);
+  :Tra cứu **Sổ Danh mục HH** <<Business Entity>>;
 
-    NCC2 --> V1["Kiểm tra tính chính xác<br/>& không trùng lặp"]
-    NCC3 --> V1
-    HH2 --> V1
-    HH3 --> V1
-    HH4 --> V1
+  if (HH đã tồn tại?) then (Chưa có)
+    :Thêm mới Hàng hóa vào
+    **Sổ Danh mục HH** <<Business Entity>>;
+  elseif (Đã có & còn KD) then
+    :Cập nhật thông tin HH
+    trong **Sổ Danh mục HH** <<Business Entity>>;
+  else (Đã có & ngừng KD)
+    :Đánh dấu "Ngừng hoạt động"
+    trong **Sổ Danh mục HH** <<Business Entity>>;
+  endif
 
-    V1 --> F2["Lưu trữ danh mục<br/>đã cập nhật"]
-    F2 --> F3["Thông báo các bộ phận<br/>liên quan<br/>(Thủ kho, NV mua hàng)"]
-    F3 --> End(["⬤ Kết thúc"])
+endif
 
-    %% Styling
-    style Start fill:#333,color:#fff
-    style End fill:#333,color:#fff
-    style D1 fill:#17a2b8,color:#fff
-    style D2 fill:#ffc107,color:#333
-    style D3 fill:#ffc107,color:#333
-    style D4 fill:#ffc107,color:#333
-    style HH4 fill:#f8d7da,color:#721c24
-    style NCC2 fill:#d4edda,color:#155724
-    style HH2 fill:#d4edda,color:#155724
+:Kiểm tra tính chính xác
+& không trùng lặp;
+:Lưu trữ **Sổ Danh mục** <<Business Entity>>
+đã cập nhật;
+:Thông báo cho Thủ kho
+về danh mục đã cập nhật;
+note right: Thủ kho & NV mua hàng\nsử dụng danh mục mới\nkhi lập phiếu
+stop
+
+@enduml
 ```
-
-## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
-
-### Swimlanes
-| Swimlane | Tên Actor |
-|---|---|
-| Lane 1 | **Kế toán kho / Thủ kho** |
-
-> **Lưu ý:** UC này chủ yếu do 1 tác nhân thực hiện (Kế toán kho hoặc Thủ kho, tùy phân công). Có thể dùng 1 swimlane duy nhất hoặc tách 2 nếu muốn chi tiết hơn.
-
-### Phân bổ Action States
-
-| Mã Node | Action State | Ký hiệu |
-|---|---|---|
-| Start | ⬤ Bắt đầu | Initial Node (●) |
-| F1 | Nhận yêu cầu cập nhật danh mục | Action State ▭ |
-| D1 | [Loại danh mục cần cập nhật?] | Decision ◇ |
-| NCC1 | Thu thập thông tin NCC | Action State ▭ |
-| HH1 | Thu thập thông tin Hàng hóa | Action State ▭ |
-| D2 | [NCC đã tồn tại?] | Decision ◇ |
-| D3 | [Hàng hóa đã tồn tại?] | Decision ◇ |
-| D4 | [Hàng hóa còn kinh doanh?] | Decision ◇ |
-| NCC2 | Thêm mới NCC | Action State ▭ |
-| NCC3 | Cập nhật thông tin NCC | Action State ▭ |
-| HH2 | Thêm mới Hàng hóa | Action State ▭ |
-| HH3 | Cập nhật thông tin Hàng hóa | Action State ▭ |
-| HH4 | Đánh dấu "Ngừng hoạt động" | Action State ▭ |
-| V1 | Kiểm tra chính xác & không trùng | Action State ▭ |
-| F2 | Lưu trữ danh mục đã cập nhật | Action State ▭ |
-| F3 | Thông báo các bộ phận liên quan | Action State ▭ |
-| End | ◉ Kết thúc | Final Node (◉) |
-
-### Guard Conditions
-- D1 → NCC1: `[Nhà cung cấp]`
-- D1 → HH1: `[Hàng hóa]`
-- D2 → NCC2: `[Chưa có]`
-- D2 → NCC3: `[Đã có]`
-- D3 → HH2: `[Chưa có]`
-- D3 → D4: `[Đã có]`
-- D4 → HH3: `[Còn KD]`
-- D4 → HH4: `[Ngừng KD]`
-
----
-
-## Giải thích luồng
-### Luồng chính
-Tác nhân nhận yêu cầu → Xác định loại danh mục (NCC hoặc Hàng hóa) → Thu thập thông tin → Kiểm tra tồn tại → Thêm mới hoặc Cập nhật → Kiểm tra chính xác → Lưu trữ → Thông báo.
-
-### Luồng thay thế
-- Hàng hóa ngừng kinh doanh → Đánh dấu "Ngừng hoạt động" thay vì xóa (bảo toàn lịch sử giao dịch).
-- NCC ngừng hợp tác → Tương tự, đánh dấu trạng thái thay vì xóa.

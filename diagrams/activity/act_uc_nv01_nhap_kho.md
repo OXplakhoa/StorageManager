@@ -1,106 +1,76 @@
 # Sơ đồ Hoạt động – UC_NV01: Nhập kho hàng hóa
 
 ## Mô tả
-Sơ đồ hoạt động dưới đây mô tả toàn bộ quy trình nghiệp vụ nhập kho hàng hóa, từ lúc Nhà cung cấp giao hàng đến khi hàng được xếp vào kho và cập nhật tồn kho. Các swimlane thể hiện rõ trách nhiệm của từng tác nhân trong từng bước.
+Sơ đồ hoạt động mô tả quy trình nhập kho hàng hóa với Swimlane (thừa tác viên) và Business Entity (thực thể dữ liệu).
 
-```mermaid
-flowchart TD
-    Start(["⬤ Bắt đầu"])
-    
-    Start --> A1["NV Mua hàng:<br/>Tiếp nhận hàng hóa<br/>+ Hóa đơn từ NCC"]
-    A1 --> A2["NV Mua hàng:<br/>Kiểm tra đối chiếu<br/>SL, chủng loại<br/>theo hóa đơn"]
-    A2 --> D1{"Hàng hóa<br/>đúng & đủ?"}
-    
-    D1 -->|"❌ Không<br/>(Lỗi/Thiếu)"| E1["NV Mua hàng:<br/>Tách riêng hàng lỗi/thiếu"]
-    E1 --> E2["NV Mua hàng:<br/>Lập Biên bản chênh lệch"]
-    E2 --> E3["NV Mua hàng:<br/>Yêu cầu NCC ký xác nhận<br/>biên bản"]
-    E3 --> E4["NV Mua hàng:<br/>Trả hàng lỗi cho NCC"]
-    E4 --> D2{"Còn hàng<br/>hợp lệ?"}
-    D2 -->|"❌ Không"| End1(["⬤ Kết thúc<br/>(Từ chối toàn bộ)"])
-    D2 -->|"✅ Có"| A3
-    
-    D1 -->|"✅ Đúng & Đủ"| A3["NV Mua hàng:<br/>Bàn giao hàng hợp lệ<br/>cho Thủ kho"]
-    A3 --> A4["Thủ kho:<br/>Kiểm tra lại lần cuối<br/>(≪include≫ UC_NV03)"]
-    A4 --> A5["Thủ kho:<br/>Lập Phiếu nhập kho<br/>(Số phiếu, ngày, NCC,<br/>chi tiết hàng, SL, đơn giá)"]
-    A5 --> A6["Thủ kho:<br/>Trình phiếu nhập<br/>lên Trưởng kho"]
-    A6 --> A7["Trưởng kho:<br/>Đối chiếu phiếu<br/>với hóa đơn gốc"]
-    A7 --> D3{"Phê duyệt?"}
-    
-    D3 -->|"❌ Từ chối"| A8["Trưởng kho:<br/>Ghi lý do từ chối<br/>→ Trả phiếu về Thủ kho"]
-    A8 --> A5
-    
-    D3 -->|"✅ Duyệt"| A9["Trưởng kho:<br/>Ký duyệt phiếu nhập kho"]
-    A9 --> A10["Thủ kho:<br/>Sắp xếp hàng hóa<br/>vào đúng vị trí trong kho"]
-    A10 --> A11["Thủ kho:<br/>Cập nhật số liệu<br/>Thẻ kho / Sổ tồn kho"]
-    A11 --> A12["Thủ kho:<br/>Lưu trữ hồ sơ<br/>(Phiếu NK + Hóa đơn)"]
-    A12 --> End2(["⬤ Kết thúc"])
+```plantuml
+@startuml
+title UC_NV01 – Nhập kho hàng hóa
 
-    %% Styling
-    style Start fill:#333,color:#fff
-    style End1 fill:#dc3545,color:#fff
-    style End2 fill:#333,color:#fff
-    style D1 fill:#ffc107,color:#333
-    style D2 fill:#ffc107,color:#333
-    style D3 fill:#ffc107,color:#333
-    style E1 fill:#f8d7da,color:#721c24
-    style E2 fill:#f8d7da,color:#721c24
-    style E3 fill:#f8d7da,color:#721c24
-    style E4 fill:#f8d7da,color:#721c24
-    style A9 fill:#d4edda,color:#155724
+|NV Mua hàng|
+start
+:Tiếp nhận hàng hóa + Hóa đơn từ NCC;
+:Kiểm tra đối chiếu SL, chủng loại
+theo **Hóa đơn mua hàng** <<Business Entity>>;
+note right: <<include>> UC_NV03\nKiểm tra hàng hóa
+
+if (Hàng hóa đúng & đủ?) then (Đúng & Đủ)
+
+  :Bàn giao hàng hợp lệ cho Thủ kho;
+
+  |Thủ kho|
+  :Kiểm tra lại lần cuối (ngoại quan, SL);
+  :Lập **Phiếu nhập kho** <<Business Entity>>
+  (Số phiếu, ngày, NCC, chi tiết hàng, SL, đơn giá);
+  :Trình phiếu nhập lên Trưởng kho;
+
+  |Trưởng kho|
+  :Đối chiếu **Phiếu nhập kho** <<Business Entity>>
+  với **Hóa đơn mua hàng** <<Business Entity>>;
+
+  if (Phê duyệt?) then (Duyệt)
+    :Ký duyệt **Phiếu nhập kho** <<Business Entity>>;
+
+    |Thủ kho|
+    :Sắp xếp hàng hóa vào đúng vị trí trong kho;
+    :Cập nhật số liệu **Thẻ kho** <<Business Entity>>
+    (Ghi nhận nhập);
+    :Lưu trữ hồ sơ
+    (**Phiếu NK** + **Hóa đơn**) <<Business Entity>>;
+    stop
+
+  else (Từ chối)
+    |Trưởng kho|
+    :Ghi lý do từ chối
+    → Trả phiếu về Thủ kho;
+    note right: Thủ kho sửa lại\nphiếu và trình lại
+    |Thủ kho|
+    :Sửa **Phiếu nhập kho** <<Business Entity>>
+    và trình lại;
+    stop
+  endif
+
+else (Lỗi / Thiếu)
+
+  |NV Mua hàng|
+  :Tách riêng hàng lỗi/thiếu;
+  note right: <<extend>> UC_NV04\nXử lý chênh lệch
+  :Lập **Biên bản chênh lệch** <<Business Entity>>
+  (Nguyên nhân, SL, mô tả lỗi);
+  :Yêu cầu NCC ký xác nhận
+  **Biên bản chênh lệch** <<Business Entity>>;
+  :Trả hàng lỗi cho NCC;
+
+  if (Còn hàng hợp lệ?) then (Có)
+    :Bàn giao phần hàng hợp lệ cho Thủ kho;
+    note right: Tiếp tục luồng chính\n(Thủ kho lập Phiếu NK)
+    stop
+  else (Không)
+    :Từ chối toàn bộ lô hàng;
+    stop
+  endif
+
+endif
+
+@enduml
 ```
-
-## 📐 Hướng dẫn vẽ lại trong IBM Rational Rose
-
-### Swimlanes (Cột dọc trong Rose)
-Tạo **3 Swimlane** theo thứ tự từ trái sang phải:
-
-| Swimlane | Tên Actor |
-|---|---|
-| Lane 1 | **NV Mua hàng** |
-| Lane 2 | **Thủ kho** |
-| Lane 3 | **Trưởng kho** |
-
-### Phân bổ Action States vào từng Swimlane
-
-| Mã Node | Action State | Swimlane | Ký hiệu Rose |
-|---|---|---|---|
-| Start | ⬤ Bắt đầu | Lane 1 | Initial Node (●) |
-| A1 | Tiếp nhận hàng hóa + Hóa đơn từ NCC | Lane 1 | Action State ▭ |
-| A2 | Kiểm tra đối chiếu SL, chủng loại theo hóa đơn | Lane 1 | Action State ▭ |
-| D1 | [Hàng hóa đúng & đủ?] | Lane 1 | Decision ◇ |
-| E1 | Tách riêng hàng lỗi/thiếu | Lane 1 | Action State ▭ |
-| E2 | Lập Biên bản chênh lệch | Lane 1 | Action State ▭ |
-| E3 | Yêu cầu NCC ký xác nhận biên bản | Lane 1 | Action State ▭ |
-| E4 | Trả hàng lỗi cho NCC | Lane 1 | Action State ▭ |
-| D2 | [Còn hàng hợp lệ?] | Lane 1 | Decision ◇ |
-| A3 | Bàn giao hàng hợp lệ cho Thủ kho | Lane 1 → Lane 2 | Action State ▭ (transition bắt chéo swimlane) |
-| A4 | Kiểm tra lại lần cuối (≪include≫ UC_NV03) | Lane 2 | Action State ▭ |
-| A5 | Lập Phiếu nhập kho | Lane 2 | Action State ▭ |
-| A6 | Trình phiếu nhập lên Trưởng kho | Lane 2 → Lane 3 | Action State ▭ (transition bắt chéo) |
-| A7 | Đối chiếu phiếu với hóa đơn gốc | Lane 3 | Action State ▭ |
-| D3 | [Phê duyệt?] | Lane 3 | Decision ◇ |
-| A8 | Ghi lý do từ chối → Trả phiếu về Thủ kho | Lane 3 | Action State ▭ |
-| A9 | Ký duyệt phiếu nhập kho | Lane 3 | Action State ▭ |
-| A10 | Sắp xếp hàng hóa vào đúng vị trí trong kho | Lane 2 | Action State ▭ |
-| A11 | Cập nhật số liệu Thẻ kho / Sổ tồn kho | Lane 2 | Action State ▭ |
-| A12 | Lưu trữ hồ sơ (Phiếu NK + Hóa đơn) | Lane 2 | Action State ▭ |
-| End1 | ◉ Kết thúc (Từ chối toàn bộ) | Lane 1 | Final Node (◉) |
-| End2 | ◉ Kết thúc | Lane 2 | Final Node (◉) |
-
-### Guard Conditions (Điều kiện trên mũi tên)
-- D1 → A3: `[Đúng & Đủ]`
-- D1 → E1: `[Lỗi/Thiếu]`
-- D2 → End1: `[Không còn hàng hợp lệ]`
-- D2 → A3: `[Còn hàng hợp lệ]`
-- D3 → A9: `[Duyệt]`
-- D3 → A8: `[Từ chối]`
-
----
-
-## Giải thích luồng
-
-### Luồng chính (Main Flow)
-Quá trình bắt đầu khi **Nhân viên mua hàng** tiếp nhận hàng hóa cùng hóa đơn từ Nhà cung cấp. Sau khi kiểm tra đối chiếu thành công (hàng đúng chủng loại, đủ số lượng), nhân viên bàn giao cho **Thủ kho**. Thủ kho kiểm tra lần cuối (<<include>> UC_NV03), lập Phiếu nhập kho và trình **Trưởng kho** phê duyệt. Sau khi được duyệt, hàng được xếp vào kho và số liệu tồn kho được cập nhật.
-
-### Luồng ngoại lệ (<<extend>> UC_NV04 – Xử lý chênh lệch)
-Nếu phát hiện hàng lỗi hoặc thiếu, NV mua hàng tách riêng hàng lỗi, lập Biên bản chênh lệch, yêu cầu NCC ký xác nhận và trả hàng lỗi. Nếu còn phần hàng hợp lệ, quy trình tiếp tục với phần hàng đó. Nếu toàn bộ lô hàng bị từ chối, quy trình kết thúc.
