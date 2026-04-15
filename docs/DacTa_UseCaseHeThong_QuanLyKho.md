@@ -1,119 +1,154 @@
-1. Đặc tả Usecase: Lập phiếu nhập kho (Luồng nghiệp vụ lõi)
-Actor chính: Thủ kho.
+1. Đặc tả Use Case: Kiểm kê hàng hóa
+Tên Use Case: Kiểm kê hàng hóa.
 
-Mô tả tóm tắt: Thủ kho tạo một phiếu ghi nhận hàng hóa chuẩn bị nhập vào kho.
+Actor: Thủ kho (người thực hiện đếm), Trưởng kho (người giám sát/chủ trì).
 
-Tiền điều kiện: Thủ kho đã đăng nhập vào ứng dụng thành công.
+Mô tả: Cho phép Thủ kho và Trưởng kho ghi nhận số lượng hàng hóa thực tế có trong kho để đối chiếu với số liệu đang lưu trên hệ thống.
 
-Luồng sự kiện chính (Basic Flow):
-
-Thủ kho chọn chức năng "Lập phiếu nhập kho" trên giao diện.
-
-Hệ thống hiển thị form tạo phiếu mới (gồm mã phiếu tự tạo, ngày lập, người lập).
-
-Thủ kho chọn Nhà cung cấp từ danh sách.
-
-Thủ kho tìm kiếm và chọn các mặt hàng cần nhập, điền số lượng và đơn giá nhập.
-
-Hệ thống tự động tính thành tiền cho từng dòng và tổng tiền của toàn bộ phiếu.
-
-Thủ kho nhấn nút "Lưu phiếu".
-
-Hệ thống lưu phiếu vào cơ sở dữ liệu với trạng thái là "Chờ phê duyệt".
-
-Hệ thống thông báo tạo phiếu thành công.
-
-Luồng ngoại lệ (Alternative Flow):
-
-Bước 4: Nếu Thủ kho nhập số lượng là số âm hoặc chữ, hệ thống báo lỗi validation và yêu cầu nhập lại.
-
-Hậu điều kiện: Một phiếu nhập kho mới được tạo ra và chờ Trưởng kho duyệt. Số lượng tồn kho thực tế chưa thay đổi.
-
-2. Đặc tả Usecase: Phê duyệt phiếu nhập/xuất kho (Luồng tương tác & Include)
-Actor chính: Trưởng kho.
-
-Mô tả tóm tắt: Trưởng kho kiểm tra và quyết định thông qua hoặc từ chối phiếu do Thủ kho lập.
-
-Tiền điều kiện: Trưởng kho đã đăng nhập. Tồn tại ít nhất một phiếu ở trạng thái "Chờ phê duyệt" (Đảm bảo logic <<include>>).
+Tiền điều kiện: Người dùng đã đăng nhập vào hệ thống.
 
 Luồng sự kiện chính:
 
-Trưởng kho chọn chức năng "Phê duyệt phiếu".
+Người dùng chọn chức năng "Kiểm kê hàng hóa".
 
-Hệ thống hiển thị danh sách các phiếu đang "Chờ phê duyệt".
+Hệ thống hiển thị màn hình tạo kỳ kiểm kê mới, tự động lấy danh sách hàng hóa và số lượng tồn kho hiện tại trên hệ thống.
 
-Trưởng kho chọn một phiếu để xem chi tiết (các mặt hàng, số lượng, tổng tiền).
+Người dùng tiến hành đếm và nhập "Số lượng thực tế" cho từng mặt hàng vào form.
 
-Trưởng kho nhấn nút "Phê duyệt".
+Người dùng nhấn "Lưu kết quả kiểm kê".
 
-Hệ thống cập nhật trạng thái phiếu thành "Đã duyệt".
+Hệ thống tính toán độ lệch (Số lượng thực tế - Số lượng hệ thống).
 
-Hệ thống tự động cộng (nếu là phiếu nhập) hoặc trừ (nếu là phiếu xuất) số lượng tương ứng vào bảng Tồn kho.
+Hệ thống lưu lại biên bản kiểm kê và thông báo thành công.
 
-Hệ thống hiển thị thông báo thành công.
+Luồng mở rộng (Dựa trên <<extend>> Báo cáo chênh lệch):
 
-Luồng thay thế:
+Tại bước 5: Nếu hệ thống phát hiện có sự chênh lệch số liệu giữa thực tế và hệ thống, Use Case mở rộng "Báo cáo chênh lệch" được kích hoạt. Hệ thống tự động trích xuất danh sách các mặt hàng bị lệch, tạo thành một báo cáo riêng và gửi thông báo đến Kế toán để xử lý.
 
-Bước 4: Trưởng kho chọn "Từ chối". Hệ thống yêu cầu nhập lý do. Trạng thái phiếu đổi thành "Đã hủy/Từ chối" và tồn kho giữ nguyên.
+Hậu điều kiện: Biên bản kiểm kê được lưu trữ.
 
-Hậu điều kiện: Phiếu thay đổi trạng thái. Số lượng hàng hóa trong kho được cập nhật chính thức.
+2. Đặc tả Use Case: Lập phiếu nhập kho
+Tên Use Case: Lập phiếu nhập kho.
 
-3. Đặc tả Usecase: Dự đoán số lượng hàng hóa (Luồng AI / Xử lý Dữ liệu)
-Đây là Usecase "ăn tiền", t thiết kế theo hướng tận dụng thuật toán phân loại và dữ liệu để hợp với tư duy làm Data/AI.
+Actor: Thủ kho.
 
-Actor chính: Trưởng kho.
-
-Actor phụ: Hệ thống (System).
-
-Mô tả tóm tắt: Hệ thống phân tích dữ liệu lịch sử xuất/nhập để dự báo các mặt hàng có nguy cơ cạn kiệt, hỗ trợ Trưởng kho lập kế hoạch nhập hàng.
-
-Tiền điều kiện: Hệ thống đã có đủ dữ liệu lịch sử giao dịch (phiếu xuất, phiếu nhập) trong một khoảng thời gian nhất định (ví dụ: 3 tháng).
-
-Luồng sự kiện chính:
-
-Trong lúc đang ở màn hình "Lập kế hoạch", Trưởng kho chọn chức năng "Dự báo thông minh".
-
-Web gửi request yêu cầu phân tích dữ liệu xuống backend.
-
-Hệ thống trích xuất dữ liệu lịch sử bán hàng và tồn kho hiện tại.
-
-Hệ thống chạy mô hình máy học (ví dụ: áp dụng thuật toán cây quyết định phân loại mức độ thiếu hụt, hoặc thuật toán hồi quy) để tính toán sức mua và dự đoán số lượng tồn kho trong tháng tới.
-
-Hệ thống trả về danh sách các sản phẩm có "Nguy cơ hết hàng cao", kèm theo "Số lượng đề xuất nhập".
-
-Trưởng kho xem xét danh sách và chọn các mặt hàng đồng ý nhập.
-
-Hệ thống tự động đẩy các mặt hàng đã chọn vào bản nháp của "Kế hoạch nhập hàng".
-
-Luồng ngoại lệ:
-
-Bước 3: Hệ thống báo lỗi "Dữ liệu lịch sử không đủ để chạy dự báo" nếu số lượng giao dịch quá ít.
-
-Hậu điều kiện: Trưởng kho có được một bản kế hoạch nhập hàng sơ bộ dựa trên số liệu thực tế.
-
-4. Đặc tả Usecase: Quản lý hàng hóa (Đại diện luồng Thêm Mới - Create)
-Actor chính: Thủ kho.
-
-Mô tả tóm tắt: Thủ kho thêm một mã hàng hóa mới vào danh mục hệ thống.
+Mô tả: Thủ kho tạo một phiếu chứng từ để ghi nhận việc hàng hóa được đưa từ nhà cung cấp vào kho.
 
 Tiền điều kiện: Thủ kho đã đăng nhập.
 
 Luồng sự kiện chính:
 
-Thủ kho chọn "Quản lý hàng hóa" -> Nhấn "Thêm mới".
+Thủ kho chọn chức năng "Lập phiếu nhập kho".
 
-Hệ thống hiển thị form nhập liệu (Mã SP, Tên SP, Đơn vị tính, Danh mục...).
+Hệ thống hiển thị form tạo phiếu mới.
 
-Thủ kho điền đầy đủ thông tin và chọn ảnh sản phẩm (nếu có).
+Thủ kho chọn thông tin Nhà cung cấp từ danh sách.
 
-Thủ kho nhấn "Lưu".
+Thủ kho tìm kiếm, chọn các mặt hàng cần nhập và nhập số lượng, đơn giá thực tế.
 
-Hệ thống kiểm tra tính hợp lệ (validate) của dữ liệu (VD: Mã SP không được trùng).
+Hệ thống tự động tính thành tiền cho từng dòng và tổng tiền của phiếu.
 
-Hệ thống lưu thông tin vào cơ sở dữ liệu.
+Thủ kho nhấn nút "Lưu và Gửi duyệt".
 
-Hệ thống làm mới danh sách hàng hóa và thông báo thành công.
+Hệ thống lưu phiếu vào cơ sở dữ liệu với trạng thái "Chờ phê duyệt".
 
-Ngoại lệ:
+Hệ thống thông báo tạo phiếu thành công.
 
-Bước 5: Nếu Mã SP đã tồn tại, hệ thống báo lỗi "Mã sản phẩm đã trùng lặp" và giữ nguyên form nhập liệu.
+Luồng ngoại lệ:
+
+Tại bước 4: Nếu Thủ kho để trống số lượng hoặc nhập số âm, hệ thống báo lỗi và yêu cầu nhập lại hợp lệ.
+
+Hậu điều kiện: Phiếu nhập kho được tạo. Lưu ý: Tồn kho thực tế chưa tăng lên cho đến khi phiếu được phê duyệt.
+
+3. Đặc tả Use Case: Phê duyệt xuất/nhập kho
+Tên Use Case: Phê duyệt xuất/nhập kho.
+
+Actor: Trưởng kho.
+
+Mô tả: Trưởng kho kiểm tra tính hợp lệ của các phiếu nhập/xuất do Thủ kho lập và quyết định thông qua để chính thức cập nhật tồn kho.
+
+Tiền điều kiện (<<include>>): Trưởng kho đã đăng nhập. Phải tồn tại ít nhất một phiếu nhập hoặc phiếu xuất ở trạng thái "Chờ phê duyệt" (Phải thực hiện xong U-C Lập phiếu).
+
+Luồng sự kiện chính:
+
+Trưởng kho chọn chức năng "Phê duyệt phiếu".
+
+Hệ thống hiển thị danh sách các phiếu (nhập/xuất) đang chờ duyệt.
+
+Trưởng kho chọn một phiếu để xem chi tiết thông tin đối chiếu.
+
+Trưởng kho nhấn "Phê duyệt".
+
+Hệ thống cập nhật trạng thái phiếu thành "Đã duyệt".
+
+Hệ thống tự động thực hiện giao dịch: Cộng số lượng vào tồn kho (nếu là phiếu nhập) hoặc trừ số lượng khỏi tồn kho (nếu là phiếu xuất).
+
+Hệ thống thông báo phê duyệt thành công.
+
+Luồng thay thế:
+
+Tại bước 4: Trưởng kho chọn "Từ chối" và nhập lý do. Hệ thống đổi trạng thái phiếu thành "Đã từ chối", số lượng tồn kho giữ nguyên không đổi.
+
+Hậu điều kiện: Trạng thái phiếu được cập nhật. Số lượng hàng hóa trong kho được thay đổi chính thức.
+
+4. Đặc tả Use Case: Xem báo cáo nhập/xuất kho
+Tên Use Case: Xem báo cáo nhập/xuất kho.
+
+Actor: Ban giám đốc.
+
+Mô tả: Cung cấp cho Ban giám đốc các số liệu thống kê tổng quan về tình hình luân chuyển hàng hóa trong kho.
+
+Tiền điều kiện: Ban giám đốc đã đăng nhập tài khoản hợp lệ.
+
+Luồng sự kiện chính:
+
+Ban giám đốc chọn chức năng "Xem báo cáo nhập/xuất".
+
+Hệ thống hiển thị giao diện bộ lọc thời gian (Từ ngày... Đến ngày...) và loại báo cáo (Báo cáo nhập, Báo cáo xuất, Tồn kho hiện tại).
+
+Ban giám đốc chọn tham số và nhấn "Xem".
+
+Hệ thống truy vấn cơ sở dữ liệu, tổng hợp số liệu dựa trên các phiếu đã được phê duyệt.
+
+Hệ thống hiển thị kết quả dưới dạng bảng biểu và biểu đồ thống kê.
+
+Hậu điều kiện: Hệ thống giữ nguyên trạng thái, không thay đổi dữ liệu.
+
+5. Đặc tả Use Case: Nhóm CRUD Quản lý hàng hóa (Đại diện 2 luồng)
+Vì U-C m ghi là <<CRUD>> Quản lý hàng hóa, trong đặc tả thực tế mình phải chẻ ra tối thiểu là Thêm mới và Cập nhật để thầy cô thấy được logic.
+
+5.1. Đặc tả luồng: Thêm mới hàng hóa (Create)
+
+Actor: Thủ kho.
+
+Mô tả: Thêm một danh mục sản phẩm mới hoàn toàn vào hệ thống.
+
+Luồng sự kiện chính:
+
+Thủ kho vào "Quản lý hàng hóa", nhấn "Thêm mới".
+
+Hệ thống hiển thị form điền thông tin (Mã hàng, Tên hàng, Đơn vị tính, Quy cách...).
+
+Thủ kho điền đầy đủ dữ liệu hợp lệ và nhấn "Lưu".
+
+Hệ thống kiểm tra trùng lặp Mã hàng. Nếu hợp lệ, lưu vào cơ sở dữ liệu với số lượng tồn kho mặc định ban đầu là 0.
+
+Hệ thống thông báo thêm thành công và cập nhật lại danh sách.
+
+5.2. Đặc tả luồng: Cập nhật thông tin hàng hóa (Update)
+
+Actor: Thủ kho.
+
+Mô tả: Sửa đổi các thông tin cơ bản của một mặt hàng đã có sẵn (Ví dụ: sửa tên, đổi đơn vị tính). Lưu ý: Không được sửa số lượng tồn kho tại đây.
+
+Luồng sự kiện chính:
+
+Thủ kho tìm kiếm và chọn một mặt hàng trong danh sách, nhấn "Chỉnh sửa".
+
+Hệ thống hiển thị form chứa thông tin hiện tại của mặt hàng.
+
+Thủ kho sửa đổi các trường thông tin cho phép và nhấn "Cập nhật".
+
+Hệ thống lưu các thay đổi đè lên bản ghi cũ trong cơ sở dữ liệu.
+
+Hệ thống thông báo cập nhật thành công.
