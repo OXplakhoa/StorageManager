@@ -190,9 +190,9 @@ package "Kiểm kê" #F3E5F5 {
 }
 
 ' ========================
-' NHÓM 6: KHO & LỊCH SỬ
+' NHÓM 6: KHO VÀ LỊCH SỬ
 ' ========================
-package "Kho & Lịch sử" #E0F7FA {
+package "Kho và Lịch sử" #E0F7FA {
     class TheKho {
         maTheKho
         ngayGiaoDich
