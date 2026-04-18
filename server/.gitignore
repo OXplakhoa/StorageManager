@@ -1,0 +1,6 @@
+node_modules/
+.env
+warehouse.db
+warehouse.db-wal
+warehouse.db-shm
+.DS_Store
