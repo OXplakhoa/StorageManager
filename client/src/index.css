@@ -177,3 +177,41 @@ button {
 .badge-warning { background-color: var(--warning-bg); color: var(--warning); }
 .badge-danger { background-color: var(--danger-bg); color: var(--danger); }
 .badge-info { background-color: var(--info-bg); color: var(--info); }
+
+/* Loading states */
+.loading-spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+.loading-state-card {
+  min-height: 280px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--bg-surface), #f3f4f6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loading-state-card h3 {
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.loading-state-card p {
+  max-width: 460px;
+  font-size: 14px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

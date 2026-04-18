@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
-import { BrainCircuit, Play, History } from 'lucide-react';
+import { BrainCircuit, Play, History, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const DuBaoPage = () => {
@@ -43,8 +43,8 @@ const DuBaoPage = () => {
     setResult(null);
     
     try {
-      const { data } = await axiosClient.post('/dubao/generate', { hang_hoa_id: selectedHangHoa }); 
-      setResult(data);
+      const result = await axiosClient.post('/dubao/generate', { hang_hoa_id: selectedHangHoa }); 
+      setResult(result);
       fetchData(); // refresh history
     } catch (err) {
       console.log('[DuBaoPage] response error', err.response?.status, err.response?.data || err.message);
@@ -54,7 +54,15 @@ const DuBaoPage = () => {
     }
   };
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) {
+    return (
+      <div className="loading-state-card">
+        <Loader2 size={30} className="loading-spinner" />
+        <h3>Đang tải dữ liệu dự báo...</h3>
+        <p>Hệ thống đang lấy danh sách hàng hóa và lịch sử dự báo AI.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -99,7 +107,16 @@ const DuBaoPage = () => {
               onClick={handleGenerate}
               disabled={generating}
             >
-              {generating ? 'Đang phân tích dữ liệu...' : <><Play size={18} /> Chạy Mô Hình AI</>}
+              {generating ? (
+                <>
+                  <Loader2 size={18} className="loading-spinner" />
+                  Đang phân tích dữ liệu...
+                </>
+              ) : (
+                <>
+                  <Play size={18} /> Chạy Mô Hình AI
+                </>
+              )}
             </button>
           ) : (
             <p style={{ color: 'var(--warning)', fontSize: '13px' }}>Bạn không có quyền chạy mô hình AI.</p>
