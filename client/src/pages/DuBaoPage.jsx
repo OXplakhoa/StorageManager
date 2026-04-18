@@ -43,10 +43,10 @@ const DuBaoPage = () => {
     setResult(null);
     
     try {
-      const data = await axiosClient.post('/dubao/generate', { hang_hoa_id: parseInt(selectedHangHoa) });
       setResult(data);
       fetchData(); // refresh history
     } catch (err) {
+      console.log('[DuBaoPage] response error', err.response?.status, err.response?.data || err.message);
       setError(err.response?.data?.error || 'Lỗi sinh dự báo. Có thể Gemini API limit.');
     } finally {
       setGenerating(false);
@@ -68,7 +68,7 @@ const DuBaoPage = () => {
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: '700' }}>Dự Báo Nhu Cầu Tích Hợp AI</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-            Sử dụng Google Gemini Flash 2.0 phân tích lịch sử nhập/xuất để đề xuất kế hoạch nhập kho.
+            Sử dụng Google Gemini Flash 3.0 phân tích lịch sử nhập/xuất để đề xuất kế hoạch nhập kho.
           </p>
         </div>
       </div>

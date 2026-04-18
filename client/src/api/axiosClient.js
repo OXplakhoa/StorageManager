@@ -10,6 +10,9 @@ const axiosClient = axios.create({
 // Add a request interceptor to attach JWT token
 axiosClient.interceptors.request.use(
   (config) => {
+    if (typeof window !== 'undefined') {
+      console.log('[axiosClient] request ->', config.method?.toUpperCase(), `${config.baseURL || ''}${config.url || ''}`, config.data || '');
+    }
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -23,6 +26,9 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    if (typeof window !== 'undefined') {
+      console.log('[axiosClient] response error <-', error.config?.method?.toUpperCase(), `${error.config?.baseURL || ''}${error.config?.url || ''}`, error.response?.status, error.response?.data || error.message);
+    }
     if (error.response?.status === 401 || error.response?.status === 403) {
       if (window.location.pathname !== '/login') {
         localStorage.removeItem('token');
