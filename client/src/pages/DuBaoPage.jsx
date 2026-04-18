@@ -43,6 +43,7 @@ const DuBaoPage = () => {
     setResult(null);
     
     try {
+      const { data } = await axiosClient.post('/dubao/generate', { hang_hoa_id: selectedHangHoa }); 
       setResult(data);
       fetchData(); // refresh history
     } catch (err) {
