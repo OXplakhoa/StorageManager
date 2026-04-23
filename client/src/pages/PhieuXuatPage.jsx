@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
-import { Plus, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react';
+import { Plus, CheckCircle, XCircle, Eye, Trash2, Search, Filter } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ActionModal from '../components/ActionModal';
+import Pagination from '../components/Pagination';
 
 const PhieuXuatPage = () => {
   const [phieuList, setPhieuList] = useState([]);
@@ -16,6 +17,12 @@ const PhieuXuatPage = () => {
   const [error, setError] = useState('');
   const [approveModal, setApproveModal] = useState({ show: false, id: null });
   const [rejectModal, setRejectModal] = useState({ show: false, id: null });
+
+  // Search & Filter state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
   
   // Create form state
   const [formData, setFormData] = useState({
@@ -47,6 +54,19 @@ const PhieuXuatPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterStatus]);
+
+  const filteredPhieu = phieuList.filter(p => {
+    const matchesSearch = p.MaPhieu.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.NguoiLap.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus ? p.TrangThai === filterStatus : true;
+    return matchesSearch && matchesFilter;
+  });
+
+  const paginatedPhieu = filteredPhieu.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const openView = async (id) => {
     try {
@@ -139,6 +159,34 @@ const PhieuXuatPage = () => {
         )}
       </div>
 
+      <div className="card" style={{ padding: '20px', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ flex: 1, position: 'relative' }}>
+          <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--text-secondary)' }} />
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Tìm theo mã phiếu hoặc người lập..." 
+            style={{ paddingLeft: '38px' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Filter size={18} color="var(--text-secondary)" />
+          <select 
+            className="form-control" 
+            style={{ width: '180px' }}
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="ChoDuyet">Chờ duyệt</option>
+            <option value="DaDuyet">Đã duyệt</option>
+            <option value="TuChoi">Từ chối</option>
+          </select>
+        </div>
+      </div>
+
       <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
@@ -152,7 +200,7 @@ const PhieuXuatPage = () => {
             </tr>
           </thead>
           <tbody>
-            {phieuList.map((p) => (
+            {paginatedPhieu.map((p) => (
               <tr key={p.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '16px', fontWeight: '500' }}>{p.MaPhieu}</td>
                 <td style={{ padding: '16px' }}>{p.NgayLap}</td>
@@ -170,8 +218,17 @@ const PhieuXuatPage = () => {
                 </td>
               </tr>
             ))}
+            {paginatedPhieu.length === 0 && (
+              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>Không tìm thấy phiếu nào</td></tr>
+            )}
           </tbody>
         </table>
+        <Pagination 
+          currentPage={currentPage}
+          totalItems={filteredPhieu.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* Modal Xem Phiếu */}

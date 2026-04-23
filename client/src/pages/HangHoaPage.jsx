@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
-import { Plus, Edit2, Trash2, AlertTriangle } from 'lucide-react';
+import { Plus, Edit2, Trash2, AlertTriangle, Search, Filter } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ActionModal from '../components/ActionModal';
+import Pagination from '../components/Pagination';
 
 const HangHoaPage = () => {
   const [items, setItems] = useState([]);
@@ -11,6 +12,12 @@ const HangHoaPage = () => {
   const [formData, setFormData] = useState({ id: null, MaHang: '', TenHang: '', DVT: '', SoLuongTonKho: 0, HanMucTonToiThieu: 10 });
   const [error, setError] = useState('');
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
+
+  // Filter & Pagination state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterLowStock, setFilterLowStock] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
   
   const { user } = useAuth();
   const canEdit = user.VaiTro === 'ThuKho' || user.VaiTro === 'KeToan';
@@ -29,6 +36,19 @@ const HangHoaPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterLowStock]);
+
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.TenHang.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          item.MaHang.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterLowStock ? item.SoLuongTonKho < item.HanMucTonToiThieu : true;
+    return matchesSearch && matchesFilter;
+  });
+
+  const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,6 +101,32 @@ const HangHoaPage = () => {
         )}
       </div>
 
+      <div className="card" style={{ padding: '20px', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ flex: 1, position: 'relative' }}>
+          <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--text-secondary)' }} />
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Tìm kiếm theo mã hoặc tên hàng..." 
+            style={{ paddingLeft: '38px' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <input 
+            type="checkbox" 
+            id="lowStockFilter" 
+            checked={filterLowStock}
+            onChange={(e) => setFilterLowStock(e.target.checked)}
+            style={{ width: '16px', height: '16px' }}
+          />
+          <label htmlFor="lowStockFilter" style={{ fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <AlertTriangle size={16} color="var(--warning)" /> Chỉ hiện cảnh báo tồn kho
+          </label>
+        </div>
+      </div>
+
       <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
@@ -94,7 +140,7 @@ const HangHoaPage = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => {
+            {paginatedItems.map((item) => {
               const isLowStock = item.SoLuongTonKho < item.HanMucTonToiThieu;
               return (
                 <tr key={item.id} style={{ 
@@ -128,8 +174,17 @@ const HangHoaPage = () => {
                 </tr>
               );
             })}
+            {paginatedItems.length === 0 && (
+              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>Không tìm thấy mặt hàng nào</td></tr>
+            )}
           </tbody>
         </table>
+        <Pagination 
+          currentPage={currentPage}
+          totalItems={filteredItems.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {showModal && (
