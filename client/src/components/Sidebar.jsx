@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axiosClient from '../api/axiosClient';
 import { 
   LayoutDashboard, 
   Package, 
@@ -13,6 +15,26 @@ import {
 
 const Sidebar = () => {
   const { user } = useAuth();
+  const [alertCount, setAlertCount] = useState(0);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const data = await axiosClient.get('/baocao/canh-bao-ton-kho');
+        setAlertCount(data.count);
+      } catch (err) {
+        // Silently fail — badge simply won't show
+      }
+    };
+    if (user) fetchAlerts();
+
+    // Refresh badge mỗi 60 giây
+    const interval = setInterval(() => {
+      if (user) fetchAlerts();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [user]);
+
   if (!user) return null;
 
   const role = user.VaiTro;
@@ -20,7 +42,7 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard, roles: ['ThuKho', 'TruongKho', 'KeToan', 'BanGD'] },
     { name: 'Khách hàng / NCC', path: '/nhacungcap', icon: Truck, roles: ['ThuKho', 'KeToan'] },
-    { name: 'Hàng hóa', path: '/hanghoa', icon: Package, roles: ['ThuKho', 'KeToan'] },
+    { name: 'Hàng hóa', path: '/hanghoa', icon: Package, roles: ['ThuKho', 'KeToan'], badge: alertCount },
     { name: 'Nhập kho', path: '/nhapkho', icon: ArrowDownToLine, roles: ['ThuKho', 'TruongKho'] },
     { name: 'Xuất kho', path: '/xuatkho', icon: ArrowUpFromLine, roles: ['ThuKho', 'TruongKho'] },
     { name: 'Kiểm kê', path: '/kiemke', icon: ClipboardCheck, roles: ['ThuKho', 'KeToan', 'TruongKho'] },
@@ -65,11 +87,31 @@ const Sidebar = () => {
                 border: 'none',
                 backgroundColor: isActive ? 'var(--accent-light)' : 'transparent',
                 color: isActive ? 'var(--accent-main)' : 'var(--text-primary)',
-                fontWeight: isActive ? '600' : '500'
+                fontWeight: isActive ? '600' : '500',
+                position: 'relative',
               })}
             >
               <Icon size={18} />
               {item.name}
+              {item.badge > 0 && (
+                <span style={{
+                  marginLeft: 'auto',
+                  backgroundColor: 'var(--danger)',
+                  color: '#fff',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  minWidth: '20px',
+                  height: '20px',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 6px',
+                  lineHeight: '1',
+                }}>
+                  {item.badge}
+                </span>
+              )}
             </NavLink>
           );
         })}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const HangHoaPage = () => {
@@ -92,31 +92,40 @@ const HangHoaPage = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '16px' }}>{item.MaHang}</td>
-                <td style={{ padding: '16px', fontWeight: '500' }}>{item.TenHang}</td>
-                <td style={{ padding: '16px' }}>{item.DVT}</td>
-                <td style={{ padding: '16px' }}>
-                  <span className={`badge ${item.SoLuongTonKho <= item.HanMucTonToiThieu ? 'badge-danger' : 'badge-success'}`}>
-                    {item.SoLuongTonKho}
-                  </span>
-                </td>
-                <td style={{ padding: '16px' }}>{item.HanMucTonToiThieu}</td>
-                {canEdit && (
-                  <td style={{ padding: '16px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                      <button className="btn btn-outline" style={{ padding: '6px' }} onClick={() => openEditModal(item)}>
-                        <Edit2 size={16} />
-                      </button>
-                      <button className="btn btn-outline" style={{ padding: '6px', color: 'var(--danger)' }} onClick={() => handleDelete(item.id)}>
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+            {items.map((item) => {
+              const isLowStock = item.SoLuongTonKho < item.HanMucTonToiThieu;
+              return (
+                <tr key={item.id} style={{ 
+                  borderBottom: '1px solid var(--border-color)',
+                  backgroundColor: isLowStock ? 'rgba(239, 68, 68, 0.06)' : 'transparent',
+                }}>
+                  <td style={{ padding: '16px' }}>{item.MaHang}</td>
+                  <td style={{ padding: '16px', fontWeight: '500' }}>
+                    {isLowStock && <AlertTriangle size={14} style={{ color: 'var(--danger)', marginRight: '6px', verticalAlign: 'middle' }} />}
+                    {item.TenHang}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td style={{ padding: '16px' }}>{item.DVT}</td>
+                  <td style={{ padding: '16px' }}>
+                    <span className={`badge ${isLowStock ? 'badge-danger' : 'badge-success'}`}>
+                      {item.SoLuongTonKho}
+                    </span>
+                  </td>
+                  <td style={{ padding: '16px' }}>{item.HanMucTonToiThieu}</td>
+                  {canEdit && (
+                    <td style={{ padding: '16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <button className="btn btn-outline" style={{ padding: '6px' }} onClick={() => openEditModal(item)}>
+                          <Edit2 size={16} />
+                        </button>
+                        <button className="btn btn-outline" style={{ padding: '6px', color: 'var(--danger)' }} onClick={() => handleDelete(item.id)}>
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
