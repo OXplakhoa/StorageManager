@@ -3,6 +3,14 @@ const router = express.Router();
 const getDb = require('../database/db');
 const { authenticate, requireRole } = require('../middleware/auth');
 
+function ghiLogTonKho(db, hangHoaId, loaiBienDong, soLuongThayDoi, maChungTu, ghiChu) {
+  const hh = db.prepare('SELECT SoLuongTonKho FROM HangHoa WHERE id = ?').get(hangHoaId);
+  db.prepare(`
+    INSERT INTO LichSuTonKho (hang_hoa_id, LoaiBienDong, SoLuongThayDoi, TonKhoSau, MaChungTu, GhiChu)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(hangHoaId, loaiBienDong, soLuongThayDoi, hh.SoLuongTonKho, maChungTu, ghiChu);
+}
+
 // GET /api/kiemke
 router.get('/', authenticate, (req, res) => {
   const db = getDb();
@@ -91,13 +99,18 @@ router.put('/:id/hoanthanh', authenticate, requireRole('ThuKho', 'KeToan'), (req
   const transaction = db.transaction(() => {
     db.prepare("UPDATE PhieuKiemKe SET TrangThai = 'HoanThanh' WHERE id = ?").run(req.params.id);
 
-    if (capNhatTonKho) {
-      const chiTiet = db.prepare('SELECT * FROM ChiTietPhieuKiemKe WHERE phieu_kiem_ke_id = ?').all(req.params.id);
-      for (const ct of chiTiet) {
-        db.prepare('UPDATE HangHoa SET SoLuongTonKho = ? WHERE id = ?')
-          .run(ct.SoLuongThucTe, ct.hang_hoa_id);
+      if (capNhatTonKho) {
+        const chiTiet = db.prepare('SELECT * FROM ChiTietPhieuKiemKe WHERE phieu_kiem_ke_id = ?').all(req.params.id);
+        for (const ct of chiTiet) {
+          const chenhLech = ct.SoLuongThucTe - ct.SoLuongSoSach;
+          db.prepare('UPDATE HangHoa SET SoLuongTonKho = ? WHERE id = ?')
+            .run(ct.SoLuongThucTe, ct.hang_hoa_id);
+          
+          if (chenhLech !== 0) {
+            ghiLogTonKho(db, ct.hang_hoa_id, 'KiemKe', chenhLech, phieu.MaKiemKe, `Chênh lệch kiểm kê (Thực tế: ${ct.SoLuongThucTe}, Sổ sách: ${ct.SoLuongSoSach})`);
+          }
+        }
       }
-    }
   });
 
   try {

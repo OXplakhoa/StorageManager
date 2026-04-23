@@ -81,6 +81,7 @@ router.post('/generate', authenticate, requireRole('TruongKho', 'BanGD'), async 
   });
 
   let soLuongDuBao, doChinhXac, ghiChu;
+  let geminiSuccess = false;
 
   // Thử Gemini Flash trước
   if (genAI) {
@@ -119,14 +120,20 @@ Trả lời JSON duy nhất (KHÔNG giải thích):
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        soLuongDuBao = parsed.soLuongDuBao;
-        doChinhXac = parsed.doChinhXac;
-        ghiChu = `[Gemini AI] ${parsed.ghiChu}`;
-        console.log('[dubao] Gemini parsed response', {
-          soLuongDuBao,
-          doChinhXac,
-          ghiChu,
-        });
+        if (parsed.soLuongDuBao !== undefined && parsed.doChinhXac !== undefined) {
+          soLuongDuBao = parsed.soLuongDuBao;
+          doChinhXac = parsed.doChinhXac;
+          ghiChu = `[Gemini AI] ${parsed.ghiChu || 'Không có ghi chú'}`;
+          geminiSuccess = true;
+          
+          console.log('[dubao] Gemini parsed response successfully', {
+            soLuongDuBao,
+            doChinhXac,
+            ghiChu,
+          });
+        } else {
+          console.log('[dubao] Gemini response missing required fields, will fallback');
+        }
       } else {
         console.log('[dubao] Gemini response had no JSON payload, will fallback');
       }
@@ -138,7 +145,7 @@ Trả lời JSON duy nhất (KHÔNG giải thích):
   }
 
   // Mock fallback nếu Gemini không khả dụng hoặc lỗi
-  if (soLuongDuBao === undefined || doChinhXac === undefined || soLuongDuBao === null || doChinhXac === null) {
+  if (!geminiSuccess) {
     console.log('[dubao] entering fallback path');
     const tongXuat = lichSuXuat.reduce((sum, x) => sum + x.SoLuong, 0);
     const tbXuatThang = Math.ceil(tongXuat / 3) || hangHoa.HanMucTonToiThieu;

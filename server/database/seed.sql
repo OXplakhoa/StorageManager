@@ -9,7 +9,7 @@ INSERT INTO NhanVien (MaNV, HoTen, SDT, DiaChi, NgaySinh, BoPhan) VALUES
 ('NV003', 'Nguyễn Văn Khoa', '0901234563', 'Địa chỉ NV003', '1990-01-01', 'Kho'),
 ('NV004', 'Bùi Xuân Hiếu', '0901234564', 'Địa chỉ NV004', '1990-01-01', 'Kế toán'),
 ('NV005', 'Huỳnh Minh Quân', '0901234565', 'Địa chỉ NV005', '1990-01-01', 'Kinh doanh'),
-('NV006', 'Trần Ban Giám Đốc', '0901234566', 'Địa chỉ NV006', '1990-01-01', 'Ban Giám đốc'),
+('NV006', 'Đinh Thị Mận', '0901234566', 'Địa chỉ NV006', '1990-01-01', 'Ban Giám đốc'),
 ('NV007', 'Lê Yêu Cầu Một', '0901234567', 'Địa chỉ NV007', '1990-01-01', 'Dự án'),
 ('NV008', 'Phạm Yêu Cầu Hai', '0901234568', 'Địa chỉ NV008', '1990-01-01', 'Kinh doanh');
 
