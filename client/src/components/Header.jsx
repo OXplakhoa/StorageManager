@@ -42,9 +42,18 @@ const Header = () => {
         <div style={{ height: '24px', width: '1px', backgroundColor: 'var(--border-color)' }}></div>
         
         <button 
-          onClick={handleLogout}
+          onClick={() => navigate('/profile')}
           className="btn btn-outline" 
           style={{ padding: '8px', border: 'none', color: 'var(--text-secondary)' }}
+          title="Trang cá nhân"
+        >
+          <User size={18} />
+        </button>
+
+        <button 
+          onClick={handleLogout}
+          className="btn btn-outline" 
+          style={{ padding: '8px', border: 'none', color: 'var(--danger)' }}
           title="Đăng xuất"
         >
           <LogOut size={18} />

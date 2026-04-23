@@ -1,6 +1,29 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
-import { History, ArrowDownToLine, ArrowUpFromLine, ClipboardCheck, Filter } from 'lucide-react';
+import { History, ArrowDownToLine, ArrowUpFromLine, ClipboardCheck, Filter, TrendingUp } from 'lucide-react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const LichSuTonKhoPage = () => {
   const [logs, setLogs] = useState([]);
@@ -35,6 +58,37 @@ const LichSuTonKhoPage = () => {
     }
   };
 
+  const chartData = {
+    labels: [...logs].reverse().map(log => log.NgayGhiNhan.split(' ')[0]),
+    datasets: [
+      {
+        label: 'Tồn Kho Dư Cuối',
+        data: [...logs].reverse().map(log => log.TonKhoSau),
+        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+        tension: 0.3,
+        fill: true,
+        pointBackgroundColor: '#4f46e5',
+      }
+    ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          label: (context) => ` Tồn kho: ${context.parsed.y}`
+        }
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, suggestedMin: 0 }
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -61,6 +115,24 @@ const LichSuTonKhoPage = () => {
           </select>
         </div>
       </div>
+
+      {filterHangHoa && !loading && (
+        <div className="card" style={{ marginBottom: '24px', padding: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+            <TrendingUp size={18} style={{ color: 'var(--accent-main)' }} />
+            <h3 style={{ fontSize: '16px', fontWeight: '600' }}>Biểu đồ tồn kho theo thời gian</h3>
+          </div>
+          {logs.length > 0 ? (
+            <div style={{ height: '300px' }}>
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          ) : (
+            <div style={{ height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+              Chưa có giao dịch nào cho mặt hàng này.
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
         {loading ? (

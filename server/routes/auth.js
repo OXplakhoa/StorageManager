@@ -68,4 +68,40 @@ router.get('/me', authenticate, (req, res) => {
   res.json({ user: req.user });
 });
 
+// PUT /api/auth/doi-mat-khau
+router.put('/doi-mat-khau', authenticate, (req, res) => {
+  const { matKhauCu, matKhauMoi } = req.body;
+
+  if (!matKhauCu || !matKhauMoi) {
+    return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
+  }
+
+  if (matKhauMoi.length < 6) {
+    return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự' });
+  }
+
+  if (matKhauMoi === matKhauCu) {
+    return res.status(400).json({ error: 'Mật khẩu mới phải khác mật khẩu cũ' });
+  }
+
+  const db = getDb();
+  const account = db.prepare('SELECT * FROM TaiKhoan WHERE id = ?').get(req.user.id);
+
+  if (!account) {
+    return res.status(404).json({ error: 'Tài khoản không tồn tại' });
+  }
+
+  const validPassword = bcrypt.compareSync(matKhauCu, account.MatKhau);
+  if (!validPassword) {
+    return res.status(401).json({ error: 'Mật khẩu cũ không chính xác' });
+  }
+
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(matKhauMoi, salt);
+
+  db.prepare('UPDATE TaiKhoan SET MatKhau = ? WHERE id = ?').run(hashedPassword, req.user.id);
+
+  res.json({ message: 'Đổi mật khẩu thành công' });
+});
+
 module.exports = router;

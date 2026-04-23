@@ -15,6 +15,7 @@ import BaoCaoPage from './pages/BaoCaoPage';
 import DuBaoPage from './pages/DuBaoPage';
 import DeNghiXuatPage from './pages/DeNghiXuatPage';
 import LichSuTonKhoPage from './pages/LichSuTonKhoPage';
+import ProfilePage from './pages/ProfilePage';
 
 const MainLayout = () => {
   return (
@@ -48,6 +49,7 @@ function AppRoutes() {
           <Route path="/dubao" element={<DuBaoPage />} />
           <Route path="/denghi" element={<DeNghiXuatPage />} />
           <Route path="/lichsu-tonkho" element={<LichSuTonKhoPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Route>
       
