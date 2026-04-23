@@ -10,7 +10,9 @@ import {
   ArrowUpFromLine, 
   ClipboardCheck, 
   BarChart3, 
-  BrainCircuit
+  BrainCircuit,
+  FileText,
+  History
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -48,6 +50,8 @@ const Sidebar = () => {
     { name: 'Kiểm kê', path: '/kiemke', icon: ClipboardCheck, roles: ['ThuKho', 'KeToan', 'TruongKho'] },
     { name: 'Báo cáo', path: '/baocao', icon: BarChart3, roles: ['KeToan', 'TruongKho', 'BanGD'] },
     { name: 'Dự báo AI', path: '/dubao', icon: BrainCircuit, roles: ['TruongKho', 'BanGD'] },
+    { name: 'Đề nghị xuất', path: '/denghi', icon: FileText, roles: ['BoPhanYC', 'ThuKho', 'TruongKho'] },
+    { name: 'Lịch sử tồn kho', path: '/lichsu-tonkho', icon: History, roles: ['ThuKho', 'TruongKho', 'KeToan', 'BanGD'] },
   ];
 
   const visibleItems = navItems.filter(item => item.roles.includes(role));

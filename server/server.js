@@ -24,6 +24,8 @@ app.use('/api/phieuxuat', require('./routes/phieuxuat'));
 app.use('/api/kiemke', require('./routes/kiemke'));
 app.use('/api/baocao', require('./routes/baocao'));
 app.use('/api/dubao', require('./routes/dubao'));
+app.use('/api/denghi', require('./routes/denghi'));
+app.use('/api/lichsu-tonkho', require('./routes/lichsu-tonkho'));
 
 // Error handling
 app.use((err, req, res, next) => {

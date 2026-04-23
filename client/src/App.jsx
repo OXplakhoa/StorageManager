@@ -13,6 +13,8 @@ import PhieuXuatPage from './pages/PhieuXuatPage';
 import KiemKePage from './pages/KiemKePage';
 import BaoCaoPage from './pages/BaoCaoPage';
 import DuBaoPage from './pages/DuBaoPage';
+import DeNghiXuatPage from './pages/DeNghiXuatPage';
+import LichSuTonKhoPage from './pages/LichSuTonKhoPage';
 
 const MainLayout = () => {
   return (
@@ -44,6 +46,8 @@ function AppRoutes() {
           <Route path="/kiemke" element={<KiemKePage />} />
           <Route path="/baocao" element={<BaoCaoPage />} />
           <Route path="/dubao" element={<DuBaoPage />} />
+          <Route path="/denghi" element={<DeNghiXuatPage />} />
+          <Route path="/lichsu-tonkho" element={<LichSuTonKhoPage />} />
         </Route>
       </Route>
       
