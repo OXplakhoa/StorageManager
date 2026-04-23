@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const getDb = require('../database/db');
 const { authenticate, requireRole } = require('../middleware/auth');
+const { ghiLogTonKho } = require('./lichsu-tonkho');
 
 // GET /api/phieuxuat
 router.get('/', authenticate, (req, res) => {
@@ -123,10 +124,11 @@ router.put('/:id/duyet', authenticate, requireRole('TruongKho'), (req, res) => {
       WHERE id = ?
     `).run(req.user.nhan_vien_id, req.params.id);
 
-    // Trừ tồn kho
+    // Trừ tồn kho + ghi log
     for (const ct of chiTiet) {
       db.prepare('UPDATE HangHoa SET SoLuongTonKho = SoLuongTonKho - ? WHERE id = ?')
         .run(ct.SoLuong, ct.hang_hoa_id);
+      ghiLogTonKho(db, ct.hang_hoa_id, 'Xuat', -ct.SoLuong, phieu.MaPhieu, `Xuất kho - ${phieu.GhiChu || ''}`);
     }
   });
 
