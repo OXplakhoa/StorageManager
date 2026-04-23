@@ -156,3 +156,40 @@ CREATE TABLE IF NOT EXISTS KetQuaDuBao (
     GhiChu        TEXT,
     FOREIGN KEY (hang_hoa_id) REFERENCES HangHoa(id)
 );
+
+-- ============================================
+-- 7. PHIẾU ĐỀ NGHỊ XUẤT KHO (Bộ phận yêu cầu)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS PhieuDeNghiXuat (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    MaDeNghi        TEXT UNIQUE NOT NULL,
+    NgayDeNghi      TEXT NOT NULL,
+    LyDo            TEXT NOT NULL,
+    TrangThai       TEXT DEFAULT 'ChoXuLy' CHECK(TrangThai IN ('ChoXuLy','DaTaoPhieu','TuChoi')),
+    nhan_vien_id    INTEGER NOT NULL,
+    hang_hoa_id     INTEGER NOT NULL,
+    SoLuong         INTEGER NOT NULL,
+    phieu_xuat_id   INTEGER,
+    ly_do_tu_choi   TEXT,
+    created_at      TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (nhan_vien_id) REFERENCES NhanVien(id),
+    FOREIGN KEY (hang_hoa_id) REFERENCES HangHoa(id),
+    FOREIGN KEY (phieu_xuat_id) REFERENCES PhieuXuatKho(id)
+);
+
+-- ============================================
+-- 8. LỊCH SỬ BIẾN ĐỘNG TỒN KHO (Stock Ledger)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS LichSuTonKho (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    hang_hoa_id     INTEGER NOT NULL,
+    NgayGhiNhan     TEXT NOT NULL DEFAULT (datetime('now')),
+    LoaiBienDong    TEXT NOT NULL CHECK(LoaiBienDong IN ('Nhap','Xuat','KiemKe','KhoiTao')),
+    SoLuongThayDoi  INTEGER NOT NULL,
+    TonKhoSau       INTEGER NOT NULL,
+    MaChungTu       TEXT,
+    GhiChu          TEXT,
+    FOREIGN KEY (hang_hoa_id) REFERENCES HangHoa(id)
+);

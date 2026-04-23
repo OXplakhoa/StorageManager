@@ -158,3 +158,30 @@ INSERT INTO ChiTietPhieuKiemKe (phieu_kiem_ke_id, hang_hoa_id, SoLuongThucTe, So
 (1, 5, 198, 200),
 (1, 7, 298, 300),
 (1, 10, 149, 150);
+
+-- ============================================
+-- PHIẾU ĐỀ NGHỊ XUẤT KHO (3 phiếu mẫu)
+-- ============================================
+INSERT INTO PhieuDeNghiXuat (MaDeNghi, NgayDeNghi, LyDo, TrangThai, nhan_vien_id, hang_hoa_id, SoLuong) VALUES
+('DNX001', '2026-04-10', 'Cần xi măng cho công trình C', 'ChoXuLy', 5, 1, 20),
+('DNX002', '2026-04-12', 'Bổ sung gạch cho tầng 3', 'ChoXuLy', 5, 3, 500),
+('DNX003', '2026-04-15', 'Sơn nội thất văn phòng mới', 'ChoXuLy', 5, 4, 10);
+
+-- ============================================
+-- LỊCH SỬ TỒN KHO (ghi nhận biến động từ seed)
+-- ============================================
+INSERT INTO LichSuTonKho (hang_hoa_id, NgayGhiNhan, LoaiBienDong, SoLuongThayDoi, TonKhoSau, MaChungTu, GhiChu) VALUES
+-- PNK001 duyệt
+(1, '2026-02-06', 'Nhap', 50,  170, 'PNK001', 'Nhập đầu tháng 2'),
+(2, '2026-02-06', 'Nhap', 10,  45,  'PNK001', 'Nhập đầu tháng 2'),
+(3, '2026-02-06', 'Nhap', 500, 3000,'PNK001', 'Nhập đầu tháng 2'),
+-- PXK001 duyệt
+(1, '2026-02-10', 'Xuat', -30, 140, 'PXK001', 'Xuất cho công trình A'),
+(3, '2026-02-10', 'Xuat', -300,2700,'PXK001', 'Xuất cho công trình A'),
+-- PNK005 duyệt
+(1, '2026-03-16', 'Nhap', 100, 240, 'PNK005', 'Đơn hàng lớn T3'),
+(14,'2026-03-16', 'Nhap', 15,  33,  'PNK005', 'Đơn hàng lớn T3'),
+-- PXK002 duyệt
+(2, '2026-03-09', 'Xuat', -5,  40,  'PXK002', 'Xuất cho dự án B'),
+(14,'2026-03-09', 'Xuat', -8,  25,  'PXK002', 'Xuất cho dự án B');
+
