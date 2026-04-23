@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { Plus, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ActionModal from '../components/ActionModal';
 
 const PhieuNhapPage = () => {
   const [phieuList, setPhieuList] = useState([]);
@@ -14,6 +15,8 @@ const PhieuNhapPage = () => {
   
   const [selectedPhieu, setSelectedPhieu] = useState(null);
   const [error, setError] = useState('');
+  const [approveModal, setApproveModal] = useState({ show: false, id: null });
+  const [rejectModal, setRejectModal] = useState({ show: false, id: null });
   
   // Create form state
   const [formData, setFormData] = useState({
@@ -59,10 +62,10 @@ const PhieuNhapPage = () => {
     }
   };
 
-  const handleApprove = async (id) => {
-    if (!window.confirm('Xác nhận duyệt phiếu này? Tồn kho sẽ được cộng thêm.')) return;
+  const handleApprove = async () => {
     try {
-      await axiosClient.put(`/phieunhap/${id}/duyet`);
+      await axiosClient.put(`/phieunhap/${approveModal.id}/duyet`);
+      setApproveModal({ show: false, id: null });
       setViewModal(false);
       fetchData();
     } catch (err) {
@@ -70,11 +73,10 @@ const PhieuNhapPage = () => {
     }
   };
 
-  const handleReject = async (id) => {
-    const lyDo = window.prompt('Nhập lý do từ chối:');
-    if (lyDo === null) return;
+  const handleReject = async (lyDo) => {
     try {
-      await axiosClient.put(`/phieunhap/${id}/tuchoi`, { lyDo });
+      await axiosClient.put(`/phieunhap/${rejectModal.id}/tuchoi`, { lyDo });
+      setRejectModal({ show: false, id: null });
       setViewModal(false);
       fetchData();
     } catch (err) {
@@ -211,10 +213,10 @@ const PhieuNhapPage = () => {
             {/* Trưởng kho duyệt */}
             {canApprove && selectedPhieu.TrangThai === 'ChoDuyet' && (
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
-                <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleReject(selectedPhieu.id)}>
+                <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => setRejectModal({ show: true, id: selectedPhieu.id })}>
                   <XCircle size={18} /> Từ chối
                 </button>
-                <button className="btn btn-primary" style={{ backgroundColor: 'var(--success)' }} onClick={() => handleApprove(selectedPhieu.id)}>
+                <button className="btn btn-primary" style={{ backgroundColor: 'var(--success)' }} onClick={() => setApproveModal({ show: true, id: selectedPhieu.id })}>
                   <CheckCircle size={18} /> Duyệt & Cộng tồn kho
                 </button>
               </div>
@@ -281,6 +283,29 @@ const PhieuNhapPage = () => {
           </div>
         </div>
       )}
+
+      <ActionModal
+        isOpen={approveModal.show}
+        title="Duyệt phiếu nhập kho"
+        message="Xác nhận duyệt phiếu này? Tồn kho sẽ được CỘNG THÊM theo số lượng trong phiếu."
+        type="success"
+        confirmText="Duyệt"
+        onConfirm={handleApprove}
+        onCancel={() => setApproveModal({ show: false, id: null })}
+      />
+
+      <ActionModal
+        isOpen={rejectModal.show}
+        title="Từ chối phiếu nhập kho"
+        message="Vui lòng nhập lý do từ chối phiếu này."
+        type="danger"
+        confirmText="Từ chối"
+        requireInput
+        inputLabel="Lý do từ chối *"
+        inputPlaceholder="Nhập lý do..."
+        onConfirm={handleReject}
+        onCancel={() => setRejectModal({ show: false, id: null })}
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { Plus, Edit2, Trash2, MapPin, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ActionModal from '../components/ActionModal';
 
 const NhaCungCapPage = () => {
   const [items, setItems] = useState([]);
@@ -9,6 +10,7 @@ const NhaCungCapPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ id: null, MaNCC: '', TenNCC: '', DiaChi: '', SDT: '' });
   const [error, setError] = useState('');
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
   
   const { user } = useAuth();
   const canEdit = user.VaiTro === 'ThuKho' || user.VaiTro === 'KeToan';
@@ -44,10 +46,10 @@ const NhaCungCapPage = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa đối tác này?')) return;
+  const handleDelete = async () => {
     try {
-      await axiosClient.delete(`/nhacungcap/${id}`);
+      await axiosClient.delete(`/nhacungcap/${deleteModal.id}`);
+      setDeleteModal({ show: false, id: null, name: '' });
       fetchData();
     } catch (err) {
       alert(err.response?.data?.error || 'Lỗi xóa dữ liệu');
@@ -92,7 +94,7 @@ const NhaCungCapPage = () => {
                   <button className="btn btn-outline" style={{ padding: '6px', border: 'none' }} onClick={() => openEditModal(item)}>
                     <Edit2 size={16} />
                   </button>
-                  <button className="btn btn-outline" style={{ padding: '6px', border: 'none', color: 'var(--danger)' }} onClick={() => handleDelete(item.id)}>
+                  <button className="btn btn-outline" style={{ padding: '6px', border: 'none', color: 'var(--danger)' }} onClick={() => setDeleteModal({ show: true, id: item.id, name: item.TenNCC })}>
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -149,6 +151,16 @@ const NhaCungCapPage = () => {
           </div>
         </div>
       )}
+
+      <ActionModal
+        isOpen={deleteModal.show}
+        title="Xóa nhà cung cấp"
+        message={`Bạn có chắc chắn muốn xóa "${deleteModal.name}"? Thao tác này không thể hoàn tác.`}
+        type="danger"
+        confirmText="Xóa"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteModal({ show: false, id: null, name: '' })}
+      />
     </div>
   );
 };

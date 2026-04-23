@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { Plus, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ActionModal from '../components/ActionModal';
 
 const HangHoaPage = () => {
   const [items, setItems] = useState([]);
@@ -9,6 +10,7 @@ const HangHoaPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ id: null, MaHang: '', TenHang: '', DVT: '', SoLuongTonKho: 0, HanMucTonToiThieu: 10 });
   const [error, setError] = useState('');
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
   
   const { user } = useAuth();
   const canEdit = user.VaiTro === 'ThuKho' || user.VaiTro === 'KeToan';
@@ -44,10 +46,10 @@ const HangHoaPage = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa mặt hàng này?')) return;
+  const handleDelete = async () => {
     try {
-      await axiosClient.delete(`/hanghoa/${id}`);
+      await axiosClient.delete(`/hanghoa/${deleteModal.id}`);
+      setDeleteModal({ show: false, id: null, name: '' });
       fetchData();
     } catch (err) {
       alert(err.response?.data?.error || 'Lỗi xóa dữ liệu');
@@ -117,7 +119,7 @@ const HangHoaPage = () => {
                         <button className="btn btn-outline" style={{ padding: '6px' }} onClick={() => openEditModal(item)}>
                           <Edit2 size={16} />
                         </button>
-                        <button className="btn btn-outline" style={{ padding: '6px', color: 'var(--danger)' }} onClick={() => handleDelete(item.id)}>
+                        <button className="btn btn-outline" style={{ padding: '6px', color: 'var(--danger)' }} onClick={() => setDeleteModal({ show: true, id: item.id, name: item.TenHang })}>
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -172,6 +174,16 @@ const HangHoaPage = () => {
           </div>
         </div>
       )}
+
+      <ActionModal
+        isOpen={deleteModal.show}
+        title="Xóa mặt hàng"
+        message={`Bạn có chắc chắn muốn xóa "${deleteModal.name}"? Thao tác này không thể hoàn tác.`}
+        type="danger"
+        confirmText="Xóa"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteModal({ show: false, id: null, name: '' })}
+      />
     </div>
   );
 };

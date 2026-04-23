@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { Plus, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ActionModal from '../components/ActionModal';
 
 const PhieuXuatPage = () => {
   const [phieuList, setPhieuList] = useState([]);
@@ -13,6 +14,8 @@ const PhieuXuatPage = () => {
   
   const [selectedPhieu, setSelectedPhieu] = useState(null);
   const [error, setError] = useState('');
+  const [approveModal, setApproveModal] = useState({ show: false, id: null });
+  const [rejectModal, setRejectModal] = useState({ show: false, id: null });
   
   // Create form state
   const [formData, setFormData] = useState({
@@ -55,10 +58,10 @@ const PhieuXuatPage = () => {
     }
   };
 
-  const handleApprove = async (id) => {
-    if (!window.confirm('Xác nhận duyệt phiếu xuất này? Tồn kho sẽ bị TRỪ TRỰC TIẾP.')) return;
+  const handleApprove = async () => {
     try {
-      await axiosClient.put(`/phieuxuat/${id}/duyet`);
+      await axiosClient.put(`/phieuxuat/${approveModal.id}/duyet`);
+      setApproveModal({ show: false, id: null });
       setViewModal(false);
       fetchData();
     } catch (err) {
@@ -66,11 +69,10 @@ const PhieuXuatPage = () => {
     }
   };
 
-  const handleReject = async (id) => {
-    const lyDo = window.prompt('Nhập lý do từ chối:');
-    if (lyDo === null) return;
+  const handleReject = async (lyDo) => {
     try {
-      await axiosClient.put(`/phieuxuat/${id}/tuchoi`, { lyDo });
+      await axiosClient.put(`/phieuxuat/${rejectModal.id}/tuchoi`, { lyDo });
+      setRejectModal({ show: false, id: null });
       setViewModal(false);
       fetchData();
     } catch (err) {
@@ -214,10 +216,10 @@ const PhieuXuatPage = () => {
             {/* Trưởng kho duyệt */}
             {canApprove && selectedPhieu.TrangThai === 'ChoDuyet' && (
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
-                <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleReject(selectedPhieu.id)}>
+                <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => setRejectModal({ show: true, id: selectedPhieu.id })}>
                   <XCircle size={18} /> Từ chối
                 </button>
-                <button className="btn btn-primary" style={{ backgroundColor: 'var(--warning)', color: '#000' }} onClick={() => handleApprove(selectedPhieu.id)}>
+                <button className="btn btn-primary" style={{ backgroundColor: 'var(--warning)', color: '#000' }} onClick={() => setApproveModal({ show: true, id: selectedPhieu.id })}>
                   <CheckCircle size={18} /> Duyệt & Xuất kho
                 </button>
               </div>
@@ -280,6 +282,29 @@ const PhieuXuatPage = () => {
           </div>
         </div>
       )}
+
+      <ActionModal
+        isOpen={approveModal.show}
+        title="Duyệt phiếu xuất kho"
+        message="Xác nhận duyệt phiếu xuất này? Tồn kho sẽ bị TRỪ TRỰC TIẼP theo số lượng trong phiếu."
+        type="warning"
+        confirmText="Duyệt & Xuất"
+        onConfirm={handleApprove}
+        onCancel={() => setApproveModal({ show: false, id: null })}
+      />
+
+      <ActionModal
+        isOpen={rejectModal.show}
+        title="Từ chối phiếu xuất kho"
+        message="Vui lòng nhập lý do từ chối phiếu này."
+        type="danger"
+        confirmText="Từ chối"
+        requireInput
+        inputLabel="Lý do từ chối *"
+        inputPlaceholder="Nhập lý do..."
+        onConfirm={handleReject}
+        onCancel={() => setRejectModal({ show: false, id: null })}
+      />
     </div>
   );
 };

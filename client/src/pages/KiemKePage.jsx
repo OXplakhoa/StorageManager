@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { Plus, Eye, CheckCircle, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ActionModal from '../components/ActionModal';
 
 const KiemKePage = () => {
   const [phieuList, setPhieuList] = useState([]);
@@ -13,6 +14,7 @@ const KiemKePage = () => {
   
   const [selectedPhieu, setSelectedPhieu] = useState(null);
   const [error, setError] = useState('');
+  const [confirmModal, setConfirmModal] = useState({ show: false, id: null, capNhatTonKho: false });
   
   const [formData, setFormData] = useState({
     MaKiemKe: `PKK${Date.now().toString().slice(-6)}`,
@@ -53,10 +55,10 @@ const KiemKePage = () => {
     }
   };
 
-  const handleComplete = async (id, capNhatTonKho = false) => {
-    if (!window.confirm(capNhatTonKho ? 'Xác nhận cập nhật tồn kho bằng số lượng thực tế?' : 'Chỉ ghi nhận hoàn thành, KHÔNG đổi tồn kho?')) return;
+  const handleComplete = async () => {
     try {
-      await axiosClient.put(`/kiemke/${id}/hoanthanh`, { capNhatTonKho });
+      await axiosClient.put(`/kiemke/${confirmModal.id}/hoanthanh`, { capNhatTonKho: confirmModal.capNhatTonKho });
+      setConfirmModal({ show: false, id: null, capNhatTonKho: false });
       setViewModal(false);
       fetchData();
     } catch (err) {
@@ -191,10 +193,10 @@ const KiemKePage = () => {
 
             {canEdit && selectedPhieu.TrangThai !== 'HoanThanh' && (
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
-                <button className="btn btn-outline" onClick={() => handleComplete(selectedPhieu.id, false)}>
+                <button className="btn btn-outline" onClick={() => setConfirmModal({ show: true, id: selectedPhieu.id, capNhatTonKho: false })}>
                   Chốt (Không đổi kho)
                 </button>
-                <button className="btn btn-primary" onClick={() => handleComplete(selectedPhieu.id, true)}>
+                <button className="btn btn-primary" onClick={() => setConfirmModal({ show: true, id: selectedPhieu.id, capNhatTonKho: true })}>
                   <CheckCircle size={18} /> Chốt & Cập nhật TonKho theo thực tế
                 </button>
               </div>
@@ -258,6 +260,18 @@ const KiemKePage = () => {
           </div>
         </div>
       )}
+
+      <ActionModal
+        isOpen={confirmModal.show}
+        title={confirmModal.capNhatTonKho ? 'Chốt & Cập nhật tồn kho' : 'Chốt kiểm kê'}
+        message={confirmModal.capNhatTonKho
+          ? 'Xác nhận cập nhật tồn kho bằng số lượng thực tế? Số lượng tồn kho trong hệ thống sẽ được ghi đè.'
+          : 'Chỉ ghi nhận hoàn thành đợt kiểm kê, KHÔNG thay đổi số lượng tồn kho.'}
+        type={confirmModal.capNhatTonKho ? 'warning' : 'success'}
+        confirmText={confirmModal.capNhatTonKho ? 'Cập nhật tồn kho' : 'Chốt'}
+        onConfirm={handleComplete}
+        onCancel={() => setConfirmModal({ show: false, id: null, capNhatTonKho: false })}
+      />
     </div>
   );
 };

@@ -8,6 +8,8 @@ const DeNghiXuatPage = () => {
   const [hangHoaList, setHangHoaList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addModal, setAddModal] = useState(false);
+  const [rejectModal, setRejectModal] = useState({ show: false, id: null, lyDo: '' });
+  const [taoPhieuModal, setTaoPhieuModal] = useState({ show: false, id: null, donGia: 0 });
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
@@ -56,23 +58,24 @@ const DeNghiXuatPage = () => {
     }
   };
 
-  const handleReject = async (id) => {
-    const lyDo = window.prompt('Nhập lý do từ chối:');
-    if (lyDo === null) return;
+  const handleReject = async (e) => {
+    e.preventDefault();
+    if (!rejectModal.lyDo) return;
     try {
-      await axiosClient.put(`/denghi/${id}/tuchoi`, { lyDo });
+      await axiosClient.put(`/denghi/${rejectModal.id}/tuchoi`, { lyDo: rejectModal.lyDo });
+      setRejectModal({ show: false, id: null, lyDo: '' });
       fetchData();
     } catch (err) {
       alert(err.response?.data?.error || 'Lỗi từ chối');
     }
   };
 
-  const handleTaoPhieuXuat = async (id) => {
-    const donGia = window.prompt('Nhập đơn giá xuất (VNĐ):', '0');
-    if (donGia === null) return;
+  const handleTaoPhieuXuat = async (e) => {
+    e.preventDefault();
     try {
-      const res = await axiosClient.post(`/denghi/${id}/tao-phieu-xuat`, { DonGia: parseFloat(donGia) });
+      const res = await axiosClient.post(`/denghi/${taoPhieuModal.id}/tao-phieu-xuat`, { DonGia: parseFloat(taoPhieuModal.donGia) || 0 });
       alert(res.message);
+      setTaoPhieuModal({ show: false, id: null, donGia: 0 });
       fetchData();
     } catch (err) {
       alert(err.response?.data?.error || 'Lỗi tạo phiếu xuất');
@@ -132,10 +135,10 @@ const DeNghiXuatPage = () => {
                   <td style={{ padding: '16px', textAlign: 'right' }}>
                     {dn.TrangThai === 'ChoXuLy' && (
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                        <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '13px', color: 'var(--danger)' }} onClick={() => handleReject(dn.id)}>
+                        <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '13px', color: 'var(--danger)' }} onClick={() => setRejectModal({ show: true, id: dn.id, lyDo: '' })}>
                           <XCircle size={14} /> Từ chối
                         </button>
-                        <button className="btn btn-primary" style={{ padding: '6px 10px', fontSize: '13px', backgroundColor: 'var(--success)' }} onClick={() => handleTaoPhieuXuat(dn.id)}>
+                        <button className="btn btn-primary" style={{ padding: '6px 10px', fontSize: '13px', backgroundColor: 'var(--success)' }} onClick={() => setTaoPhieuModal({ show: true, id: dn.id, donGia: 0 })}>
                           <ArrowRight size={14} /> Tạo PXK
                         </button>
                       </div>
@@ -180,6 +183,44 @@ const DeNghiXuatPage = () => {
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
                 <button type="button" className="btn btn-outline" onClick={() => setAddModal(false)}>Hủy</button>
                 <button type="submit" className="btn btn-primary">Gửi đề nghị</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal từ chối đề nghị */}
+      {rejectModal.show && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
+          <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+            <h2 style={{ marginBottom: '16px', color: 'var(--danger)', fontSize: '20px' }}>Từ chối đề nghị</h2>
+            <form onSubmit={handleReject}>
+              <div className="form-group">
+                <label className="form-label">Lý do từ chối *</label>
+                <textarea className="form-control" rows="3" value={rejectModal.lyDo} onChange={e => setRejectModal({...rejectModal, lyDo: e.target.value})} required autoFocus placeholder="Nhập lý do từ chối..." />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
+                <button type="button" className="btn btn-outline" onClick={() => setRejectModal({ show: false, id: null, lyDo: '' })}>Hủy</button>
+                <button type="submit" className="btn btn-primary" style={{ backgroundColor: 'var(--danger)', borderColor: 'var(--danger)' }}>Xác nhận từ chối</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal tạo phiếu xuất */}
+      {taoPhieuModal.show && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
+          <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+            <h2 style={{ marginBottom: '16px', color: 'var(--success)', fontSize: '20px' }}>Tạo phiếu xuất kho</h2>
+            <form onSubmit={handleTaoPhieuXuat}>
+              <div className="form-group">
+                <label className="form-label">Đơn giá xuất (VNĐ)</label>
+                <input type="number" min="0" className="form-control" value={taoPhieuModal.donGia} onChange={e => setTaoPhieuModal({...taoPhieuModal, donGia: e.target.value})} autoFocus placeholder="0" />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
+                <button type="button" className="btn btn-outline" onClick={() => setTaoPhieuModal({ show: false, id: null, donGia: 0 })}>Hủy</button>
+                <button type="submit" className="btn btn-primary" style={{ backgroundColor: 'var(--success)', borderColor: 'var(--success)' }}>Tạo Phiếu Xuất</button>
               </div>
             </form>
           </div>
