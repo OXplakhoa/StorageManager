@@ -2247,5 +2247,5 @@ INSERT INTO LichSuTonKho (hang_hoa_id, NgayGhiNhan, LoaiBienDong, SoLuongThayDoi
 INSERT INTO PhieuDeNghiXuat (MaDeNghi, NgayDeNghi, LyDo, TrangThai, nhan_vien_id, hang_hoa_id, SoLuong) VALUES
 ('DNX001', '2026-04-10', 'Xin xuất hàng mẫu Unilever', 'ChoXuLy', 5, 1, 5),
 ('DNX002', '2026-04-12', 'Vật tư cho Vinamilk', 'ChoXuLy', 5, 6, 10),
-('DNX003', '2026-04-15', 'Cần thép dự án Coteccons', 'DaXuat', 7, 9, 20),
+('DNX003', '2026-04-15', 'Cần thép dự án Coteccons', 'DaTaoPhieu', 7, 9, 20),
 ('DNX004', '2026-04-18', 'Mì tôm nội bộ', 'TuChoi', 8, 4, 10);
