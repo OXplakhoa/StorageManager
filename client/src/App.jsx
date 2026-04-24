@@ -16,6 +16,7 @@ import DuBaoPage from './pages/DuBaoPage';
 import DeNghiXuatPage from './pages/DeNghiXuatPage';
 import LichSuTonKhoPage from './pages/LichSuTonKhoPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminUsersPage from './pages/AdminUsersPage';
 
 const MainLayout = () => {
   return (
@@ -50,6 +51,7 @@ function AppRoutes() {
           <Route path="/denghi" element={<DeNghiXuatPage />} />
           <Route path="/lichsu-tonkho" element={<LichSuTonKhoPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Route>
       </Route>
       

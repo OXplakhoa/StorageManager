@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS TaiKhoan (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     TenDangNhap   TEXT UNIQUE NOT NULL,
     MatKhau       TEXT NOT NULL,
-    VaiTro        TEXT NOT NULL CHECK(VaiTro IN ('ThuKho','TruongKho','KeToan','BoPhanYC','BanGD')),
+    VaiTro        TEXT NOT NULL CHECK(VaiTro IN ('ThuKho','TruongKho','KeToan','BoPhanYC','BanGD','Admin')),
     TrangThai     TEXT DEFAULT 'HoatDong' CHECK(TrangThai IN ('HoatDong','Khoa')),
     nhan_vien_id  INTEGER UNIQUE,
     FOREIGN KEY (nhan_vien_id) REFERENCES NhanVien(id)

@@ -12,7 +12,8 @@ import {
   BarChart3, 
   BrainCircuit,
   FileText,
-  History
+  History,
+  Users
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -52,6 +53,7 @@ const Sidebar = () => {
     { name: 'Dự báo AI', path: '/dubao', icon: BrainCircuit, roles: ['TruongKho', 'BanGD'] },
     { name: 'Đề nghị xuất', path: '/denghi', icon: FileText, roles: ['BoPhanYC', 'ThuKho', 'TruongKho'] },
     { name: 'Lịch sử tồn kho', path: '/lichsu-tonkho', icon: History, roles: ['ThuKho', 'TruongKho', 'KeToan', 'BanGD'] },
+    { name: 'Quản trị hệ thống', path: '/admin/users', icon: Users, roles: ['Admin'] },
   ];
 
   const visibleItems = navItems.filter(item => item.roles.includes(role));

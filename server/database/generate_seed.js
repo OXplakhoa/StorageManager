@@ -8,7 +8,8 @@ const nhanVien = [
   { id: 5, ma: 'NV005', ten: 'Huỳnh Minh Quân', sdt: '0901234565', bp: 'Kinh doanh', vaitro: 'BoPhanYC', tk: 'kinhdoanh1' },
   { id: 6, ma: 'NV006', ten: 'Trần Ban Giám Đốc', sdt: '0901234566', bp: 'Ban Giám đốc', vaitro: 'BanGD', tk: 'giamdoc' },
   { id: 7, ma: 'NV007', ten: 'Lê Yêu Cầu Một', sdt: '0901234567', bp: 'Dự án', vaitro: 'BoPhanYC', tk: 'duan1' },
-  { id: 8, ma: 'NV008', ten: 'Phạm Yêu Cầu Hai', sdt: '0901234568', bp: 'Kinh doanh', vaitro: 'BoPhanYC', tk: 'kinhdoanh2' }
+  { id: 8, ma: 'NV008', ten: 'Phạm Yêu Cầu Hai', sdt: '0901234568', bp: 'Kinh doanh', vaitro: 'BoPhanYC', tk: 'kinhdoanh2' },
+  { id: 9, ma: 'NV009', ten: 'Quản trị viên', sdt: '0901234569', bp: 'Hệ thống', vaitro: 'Admin', tk: 'admin' }
 ];
 
 const nhaCungCap = [
@@ -184,7 +185,7 @@ out += makeInsert('LichSuTonKho', ['hang_hoa_id', 'NgayGhiNhan', 'LoaiBienDong',
 out += `INSERT INTO PhieuDeNghiXuat (MaDeNghi, NgayDeNghi, LyDo, TrangThai, nhan_vien_id, hang_hoa_id, SoLuong) VALUES
 ('DNX001', '2026-04-10', 'Xin xuất hàng mẫu Unilever', 'ChoXuLy', 5, 1, 5),
 ('DNX002', '2026-04-12', 'Vật tư cho Vinamilk', 'ChoXuLy', 5, 6, 10),
-('DNX003', '2026-04-15', 'Cần thép dự án Coteccons', 'DaXuat', 7, 9, 20),
+('DNX003', '2026-04-15', 'Cần thép dự án Coteccons', 'DaTaoPhieu', 7, 9, 20),
 ('DNX004', '2026-04-18', 'Mì tôm nội bộ', 'TuChoi', 8, 4, 10);
 `;
 
